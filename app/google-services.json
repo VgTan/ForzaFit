@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "527051697744",
+    "project_id": "forzafit-87696",
+    "storage_bucket": "forzafit-87696.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:527051697744:android:6ca3ae68c3767efb49eb55",
+        "android_client_info": {
+          "package_name": "com.example.forzafit"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAQ3_s3061o6wwuBrFD_ePKAKkj8kRb-Qo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
