@@ -23,7 +23,7 @@ class ProfileFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        (activity as MainActivity).ShowNavtools()
         binding.txtUserName.text = "Ari Maulana Hadijaya"
         binding.txtUserAge.text = "Age: 20"
         binding.txtBMI.text = "BMI: 19.6"
