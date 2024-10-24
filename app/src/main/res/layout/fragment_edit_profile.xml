@@ -1,0 +1,225 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bgProfile"
+    tools:context=".EditProfileFragment">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center_horizontal">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="300dp"
+            android:layout_marginBottom="24dp">
+
+            <ImageView
+                android:id="@+id/imgEditCover"
+                android:layout_width="match_parent"
+                android:layout_height="250dp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/cover_placeholder" />
+
+            <ImageView
+                android:id="@+id/imgEditProfilePicture"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_gravity="bottom|start"
+                android:src="@drawable/profile_placeholder"
+                android:background="@drawable/circle_shape"
+                android:padding="4dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginBottom="0dp"
+                android:contentDescription="@string/edit_profile_picture" />
+        </FrameLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="First Name"
+            android:textSize="16sp"
+            android:textColor="@color/white"
+            android:layout_marginStart="16dp"
+            android:layout_gravity="start"
+            android:textStyle="bold" />
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:padding="16dp">
+
+            <EditText
+                android:id="@+id/editFirstName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Ari"
+                android:textColor="@color/textFill"
+                android:textStyle="bold"
+                android:textSize="16sp"
+                android:paddingEnd="36dp"
+                android:padding="8dp"
+                android:background="@drawable/rounded_background_2" />
+
+            <ImageView
+                android:id="@+id/icEditFirstName"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_gravity="end|center_vertical"
+                android:layout_marginEnd="8dp"
+                android:src="@drawable/ic_edit2"
+                android:contentDescription="@string/edit_first_name" />
+        </FrameLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Last Name"
+            android:textSize="16sp"
+            android:textColor="@color/white"
+            android:layout_marginStart="16dp"
+            android:layout_gravity="start"
+            android:textStyle="bold" />
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:padding="16dp">
+
+            <EditText
+                android:id="@+id/editLastName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Maulana Hadijaya"
+                android:textColor="@color/textFill"
+                android:textStyle="bold"
+                android:textSize="16sp"
+                android:paddingEnd="36dp"
+                android:padding="8dp"
+                android:background="@drawable/rounded_background_2" />
+
+            <ImageView
+                android:id="@+id/icEditLastName"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_gravity="end|center_vertical"
+                android:layout_marginEnd="8dp"
+                android:src="@drawable/ic_edit2"
+                android:contentDescription="@string/edit_last_name" />
+        </FrameLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Age"
+            android:textColor="@color/white"
+            android:layout_marginStart="16dp"
+            android:textSize="16sp"
+            android:layout_gravity="start"
+            android:textStyle="bold" />
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:padding="16dp">
+
+            <EditText
+                android:id="@+id/editAge"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="10"
+                android:textColor="@color/textFill"
+                android:textStyle="bold"
+                android:textSize="16sp"
+                android:paddingEnd="36dp"
+                android:padding="8dp"
+                android:inputType="number"
+                android:background="@drawable/rounded_background_2" />
+
+            <ImageView
+                android:id="@+id/icEditAge"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_gravity="end|center_vertical"
+                android:layout_marginEnd="8dp"
+                android:src="@drawable/ic_edit2"
+                android:contentDescription="@string/edit_age" />
+        </FrameLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Description"
+            android:textColor="@color/white"
+            android:layout_gravity="start"
+            android:layout_marginStart="16dp"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:padding="16dp">
+
+            <EditText
+                android:id="@+id/editDescription"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="I'm new to this app, edit me!"
+                android:textSize="16sp"
+                android:textColor="@color/textFill"
+                android:textStyle="bold"
+                android:paddingEnd="36dp"
+                android:padding="8dp"
+                android:lines="4"
+                android:gravity="top|start"
+                android:background="@drawable/rounded_background_2" />
+
+            <ImageView
+                android:id="@+id/icEditDescription"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_gravity="end|top"
+                android:layout_marginEnd="8dp"
+                android:layout_marginTop="8dp"
+                android:src="@drawable/ic_edit2"
+                android:contentDescription="@string/edit_description" />
+        </FrameLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_horizontal"
+            android:layout_marginBottom="20dp">
+
+            <Button
+                android:id="@+id/btnClose"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Close"
+                android:textSize="16sp"
+                android:layout_marginEnd="16dp"
+                android:backgroundTint="#4c4c4c" />
+
+            <Button
+                android:id="@+id/btnSaveChanges"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Save Changes"
+                android:textSize="16sp"
+                android:textColor="@color/black"
+                android:drawableEnd="@drawable/ic_save"
+                android:backgroundTint="#C7FFD477"
+                android:paddingEnd="20dp"
+                android:drawablePadding="8dp" />
+
+        </LinearLayout>
+    </LinearLayout>
+</ScrollView>
