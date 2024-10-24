@@ -34,6 +34,18 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginBottom="0dp"
                 android:contentDescription="@string/edit_profile_picture" />
+
+            <ImageView
+                android:id="@+id/imgAddPictureIcon"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:layout_gravity="bottom"
+                android:layout_marginStart="50dp"
+                android:layout_marginBottom="30dp"
+                android:background="@drawable/circle_shape"
+                android:contentDescription="@string/add_picture_icon"
+                android:padding="2dp"
+                android:src="@drawable/ic_add_picture" />
         </FrameLayout>
 
         <TextView
@@ -56,7 +68,7 @@
                 android:id="@+id/editFirstName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Ari"
+                android:text=""
                 android:textColor="@color/textFill"
                 android:textStyle="bold"
                 android:textSize="16sp"
@@ -94,7 +106,7 @@
                 android:id="@+id/editLastName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Maulana Hadijaya"
+                android:text=""
                 android:textColor="@color/textFill"
                 android:textStyle="bold"
                 android:textSize="16sp"
@@ -132,7 +144,7 @@
                 android:id="@+id/editAge"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="10"
+                android:text=""
                 android:textColor="@color/textFill"
                 android:textStyle="bold"
                 android:textSize="16sp"
@@ -171,7 +183,7 @@
                 android:id="@+id/editDescription"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="I'm new to this app, edit me!"
+                android:text=""
                 android:textSize="16sp"
                 android:textColor="@color/textFill"
                 android:textStyle="bold"

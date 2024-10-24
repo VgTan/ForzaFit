@@ -12,6 +12,9 @@
     <string name="login">LOGIN</string>
     <string name="next">Next</string>
 
+    <string name="cover_image">Add Cover Image</string>
+    <string name="edit_cover_button">Add Cover Button</string>
+    <string name="add_picture_icon">Add Profile Picture</string>
     <string name="edit_cover_image">Edit Cover Image</string>
     <string name="edit_profile_picture">Edit Profile Picture</string>
     <string name="edit_first_name">Edit First Name</string>

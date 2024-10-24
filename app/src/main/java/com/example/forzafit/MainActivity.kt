@@ -6,8 +6,6 @@ import android.os.Looper
 import android.view.View
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.ui.setupActionBarWithNavController
 import com.example.forzafit.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
@@ -17,33 +15,20 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        setContentView(R.layout.activity_main)
-        HideNavtools()
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
+        setSupportActionBar(binding.toolbar)
+        HideNavtools()
         supportFragmentManager.beginTransaction()
             .replace(R.id.fragment_container, LazyLoadFragment())
             .commit()
 
         Handler(Looper.getMainLooper()).postDelayed({
-            val transaction = supportFragmentManager.beginTransaction()
-            transaction.replace(R.id.fragment_container, FirstLandingPageFragment())
-            transaction.commit()
+            supportFragmentManager.beginTransaction()
+                .replace(R.id.fragment_container, FirstLandingPageFragment())
+                .commit()
         }, 3000)
-
-        binding = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-
-        setSupportActionBar(binding.toolbar)
-        val navHostFragment = supportFragmentManager
-            .findFragmentById(R.id.nav_host_fragment) as NavHostFragment
-        val navController = navHostFragment.navController
-        setupActionBarWithNavController(navController)
-    }
-
-    override fun onSupportNavigateUp(): Boolean {
-        val navHostFragment = supportFragmentManager
-            .findFragmentById(R.id.nav_host_fragment) as NavHostFragment
-        return navHostFragment.navController.navigateUp() || super.onSupportNavigateUp()
     }
 
     fun HideNavtools() {
@@ -55,11 +40,10 @@ class MainActivity : AppCompatActivity() {
                         or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
                 )
     }
+
     fun ShowNavtools() {
         supportActionBar?.show()
 
         window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_VISIBLE
     }
-
-
 }
