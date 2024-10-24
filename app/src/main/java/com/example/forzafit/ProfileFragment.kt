@@ -1,9 +1,11 @@
 package com.example.forzafit
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewOutlineProvider
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
 import com.example.forzafit.databinding.FragmentProfileBinding
@@ -65,7 +67,6 @@ class ProfileFragment : Fragment() {
                     val age = calculateAge(birthDate)
                     val bmi = calculateBMI(height, weight)
 
-                    // Set text fields
                     binding.txtUserName.text = "$firstName $lastName"
                     binding.txtUserAge.text = "Age: $age"
                     binding.txtBMI.text = "BMI: %.1f".format(bmi)
@@ -83,6 +84,7 @@ class ProfileFragment : Fragment() {
 
     private fun loadProfileImage(imageUrl: String?) {
         if (!imageUrl.isNullOrEmpty()) {
+            binding.imgProfile.tag = imageUrl
             Glide.with(this)
                 .load(imageUrl)
                 .placeholder(R.drawable.profile_placeholder)
@@ -91,10 +93,16 @@ class ProfileFragment : Fragment() {
         } else {
             binding.imgProfile.setImageResource(R.drawable.profile_placeholder)
         }
+
+        binding.imgProfile.apply {
+            clipToOutline = true
+            outlineProvider = ViewOutlineProvider.BACKGROUND
+        }
     }
 
     private fun loadCoverImage(coverUrl: String?) {
         if (!coverUrl.isNullOrEmpty()) {
+            binding.imgCover.tag = coverUrl
             Glide.with(this)
                 .load(coverUrl)
                 .placeholder(R.drawable.cover_placeholder)
@@ -152,12 +160,21 @@ class ProfileFragment : Fragment() {
     private fun navigateToEditProfileFragment() {
         val editProfileFragment = EditProfileFragment()
         val bundle = Bundle()
-        bundle.putString("firstName", binding.txtUserName.text.toString().split(" ")[0])
-        bundle.putString("lastName", binding.txtUserName.text.toString().split(" ")[1])
+
+        val nameParts = binding.txtUserName.text.toString().split(" ")
+        val firstName = nameParts.getOrNull(0) ?: ""
+        val lastName = nameParts.getOrNull(1) ?: ""
+        val profileImageUrl = binding.imgProfile.tag?.toString()
+        val coverImageUrl = binding.imgCover.tag?.toString()
+
+        bundle.putString("firstName", firstName)
+        bundle.putString("lastName", lastName)
         bundle.putString("age", binding.txtUserAge.text.toString().replace("Age: ", ""))
         bundle.putString("description", binding.txtDescription.text.toString())
-        editProfileFragment.arguments = bundle
+        bundle.putString("profileImageUrl", profileImageUrl)
+        bundle.putString("coverImageUrl", coverImageUrl)
 
+        editProfileFragment.arguments = bundle
         parentFragmentManager.beginTransaction()
             .replace(R.id.fragment_container, editProfileFragment)
             .addToBackStack(null)

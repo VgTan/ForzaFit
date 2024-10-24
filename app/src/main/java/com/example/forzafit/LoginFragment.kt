@@ -60,7 +60,7 @@ class LoginFragment : Fragment() {
                 if (task.isSuccessful) {
                     Toast.makeText(context, "Login successful", Toast.LENGTH_SHORT).show()
                     parentFragmentManager.beginTransaction()
-                        .replace(R.id.fragment_container, ProfileFragment()) //INI NANTI DIUBAH
+                        .replace(R.id.fragment_container, HomeFragment()) //INI NANTI DIUBAH
                         .commit()
                 } else {
                     Toast.makeText(context, "Login failed: ${task.exception?.message}", Toast.LENGTH_SHORT).show()
