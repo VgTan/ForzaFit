@@ -1,6 +1,8 @@
 package com.example.forzafit
 
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -11,10 +13,15 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_main)
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
-        }
+
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.fragment_container, LazyLoadFragment())
+            .commit()
+
+        Handler(Looper.getMainLooper()).postDelayed({
+            val transaction = supportFragmentManager.beginTransaction()
+            transaction.replace(R.id.fragment_container, FirstLandingPageFragment())
+            transaction.commit()
+        }, 3000)
     }
 }
