@@ -64,7 +64,8 @@ class SignUpFragment : Fragment() {
                         "weight" to weight,
                         "targetWeight" to targetWeight,
                         "xp" to 0,
-                        "level" to 0
+                        "level" to 0,
+                        "bmiLastCalculated" to System.currentTimeMillis()
                     )
 
                     user?.let {

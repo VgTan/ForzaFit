@@ -16,5 +16,6 @@
     <color name="color3">#f88b69</color>
     <color name="color4">#f47c64</color>
     <color name="color5">#ffa42f</color>
+    <color name="black_overlay">#80000000</color>
 
 </resources>

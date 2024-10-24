@@ -29,8 +29,9 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginBottom="0dp"
                 android:src="@drawable/profile_placeholder"
-                android:background="@drawable/circle_shape"
-                android:padding="4dp" />
+                android:padding="4dp"
+                android:scaleType="centerCrop"
+                android:background="@drawable/circle_shape" />
 
             <ImageView
                 android:id="@+id/imgEditProfile"
@@ -66,7 +67,7 @@
                         android:id="@+id/txtUserName"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Ari Maulana Hadijaya"
+                        android:text=""
                         android:textSize="20sp"
                         android:textStyle="bold"
                         android:textColor="@color/white"
@@ -76,7 +77,7 @@
                         android:id="@+id/txtUserAge"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Age: 20"
+                        android:text=""
                         android:textSize="14sp"
                         android:textColor="@color/white" />
                 </LinearLayout>
@@ -90,7 +91,7 @@
                             android:id="@+id/txtBMI"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="BMI: 19.6"
+                            android:text=""
                             android:textSize="14sp"
                             android:textStyle="bold"
                             android:textColor="@color/secondary" />
@@ -99,7 +100,7 @@
                             android:id="@+id/txtLastCalculated"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Last calculated: 15 days ago"
+                            android:text=""
                             android:textSize="10sp"
                             android:textColor="@color/white" />
                     </LinearLayout>
@@ -109,7 +110,7 @@
                 android:id="@+id/txtDescription"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Hello there! I'm new in this app!"
+                android:text=""
                 android:textSize="14sp"
                 android:padding="8dp"
                 android:layout_marginTop="8dp"
