@@ -1,0 +1,72 @@
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center_horizontal"
+    android:background="@drawable/homepagebackground"
+    android:padding="24dp">
+
+    <!-- Title -->
+    <TextView
+        android:id="@+id/tvStart"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Let's Start"
+        android:textSize="26sp"
+        android:textStyle="bold"
+        android:textColor="@color/main"
+        android:gravity="center"
+        android:layout_marginTop="104dp"
+        android:paddingBottom="4dp" />
+
+    <TextView
+        android:id="@+id/tvToday"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:paddingBottom="0dp"
+        android:text="Today!"
+        android:textColor="@color/main"
+        android:textSize="30sp"
+        android:textStyle="bold" />
+
+    <!-- Exercise Type Dropdown (Spinner) -->
+    <Spinner
+        android:id="@+id/exerciseTypeSpinner"
+        android:layout_width="280dp"
+        android:layout_height="50dp"
+        android:layout_marginBottom="16dp"
+        android:layout_marginTop="64dp"
+        android:paddingStart="10dp"
+        android:background="@drawable/spinner_background"
+        android:padding="2dp"
+        android:spinnerMode="dropdown" />
+
+    <!-- Input Field -->
+    <EditText
+        android:id="@+id/inputField"
+        android:layout_width="280dp"
+        android:layout_height="50dp"
+        android:hint="Distance (m)"
+        android:inputType="number"
+        android:textColor="@color/main"
+        android:padding="2dp"
+        android:paddingStart="15dp"
+        android:background="@drawable/spinner_background"
+        android:layout_marginBottom="24dp" />
+
+    <!-- Next Button -->
+    <Button
+        android:id="@+id/btnNext"
+        android:layout_width="200dp"
+        android:layout_height="50dp"
+        android:text="Next"
+        android:textColor="@color/white"
+        android:textSize="18sp"
+        android:backgroundTint="@color/main"
+        android:textStyle="bold"
+        android:layout_marginTop="16dp"
+        android:layout_gravity="center_horizontal" />
+</LinearLayout>

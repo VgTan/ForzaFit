@@ -7,6 +7,15 @@
     <color name="sky">#87CEEB</color>
     <color name="bgProfile">#532200</color>
     <color name="textFill">#A1502E</color>
+    <color name="greenXp">#384D1F</color>
+    <color name="grayXp">#545454</color>
+
+
+    <color name="color1">#ffdac4</color>
+    <color name="color2">#f6b89e</color>
+    <color name="color3">#f88b69</color>
+    <color name="color4">#f47c64</color>
+    <color name="color5">#ffa42f</color>
     <color name="black_overlay">#80000000</color>
 
 </resources>
