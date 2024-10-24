@@ -4,5 +4,7 @@
     <color name="white">#FFFFFFFF</color>
     <color name="main">#532200</color>
     <color name="secondary">#EFCFA0</color>
+    <color name="bgProfile">#532200</color>
+    <color name="textFill">#A1502E</color>
 
 </resources>
