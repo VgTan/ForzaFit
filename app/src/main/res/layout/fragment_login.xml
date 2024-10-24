@@ -66,13 +66,13 @@
                     android:id="@+id/login_email"
                     android:layout_width="295dp"
                     android:layout_height="wrap_content"
+                    android:backgroundTint="@color/white"
                     android:ems="10"
                     android:hint="@string/emailText"
                     android:inputType="text"
                     android:textColor="@color/white"
                     android:textColorHint="@color/white"
                     android:textSize="14sp"
-                    tools:backgroundTint="#FFFFFF"
                     tools:layout_editor_absoluteX="74dp"
                     tools:layout_editor_absoluteY="345dp" />
 
@@ -113,7 +113,7 @@
             </LinearLayout>
 
             <Button
-                android:id="@+id/button2"
+                android:id="@+id/button_login"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="20dp"
@@ -130,6 +130,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
+                android:layout_marginTop="5dp"
                 android:gravity="center"
                 android:orientation="horizontal">
 

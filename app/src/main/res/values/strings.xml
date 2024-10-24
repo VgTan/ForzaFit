@@ -10,6 +10,7 @@
     <string name="forgot">Forgot Password</string>
     <string name="createAccount">Create an Account</string>
     <string name="login">LOGIN</string>
+    <string name="next">Next</string>
 
     <string name="edit_cover_image">Edit Cover Image</string>
     <string name="edit_profile_picture">Edit Profile Picture</string>
