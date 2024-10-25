@@ -71,46 +71,34 @@ class ProfileFragment : Fragment() {
                     binding.txtUserAge.text = "Age: $age"
                     binding.txtBMI.text = "BMI: %.1f".format(bmi)
                     binding.txtDescription.text = description
+                    if (!profileImageUrl.isNullOrEmpty()) {
+                        binding.imgProfile.tag = profileImageUrl
+                        Glide.with(this)
+                            .load(profileImageUrl)
+                            .placeholder(R.drawable.profile_placeholder)
+                            .error(R.drawable.profile_placeholder)
+                            .into(binding.imgProfile)
+                    }
+                    binding.imgProfile.apply {
+                        clipToOutline = true
+                        outlineProvider = ViewOutlineProvider.BACKGROUND
+                    }
 
-                    loadProfileImage(profileImageUrl)
-                    loadCoverImage(coverImageUrl)
+                    // Load updated cover image
+                    if (!coverImageUrl.isNullOrEmpty()) {
+                        binding.imgCover.tag = coverImageUrl
+                        Glide.with(this)
+                            .load(coverImageUrl)
+                            .placeholder(R.drawable.cover_placeholder)
+                            .error(R.drawable.cover_placeholder)
+                            .into(binding.imgCover)
+                    }
                     displayLastCalculatedBMI(bmiLastCalculated)
                 }
             }
             .addOnFailureListener { e ->
                 // Handle the error here
             }
-    }
-
-    private fun loadProfileImage(imageUrl: String?) {
-        if (!imageUrl.isNullOrEmpty()) {
-            binding.imgProfile.tag = imageUrl
-            Glide.with(this)
-                .load(imageUrl)
-                .placeholder(R.drawable.profile_placeholder)
-                .error(R.drawable.profile_placeholder)
-                .into(binding.imgProfile)
-        } else {
-            binding.imgProfile.setImageResource(R.drawable.profile_placeholder)
-        }
-
-        binding.imgProfile.apply {
-            clipToOutline = true
-            outlineProvider = ViewOutlineProvider.BACKGROUND
-        }
-    }
-
-    private fun loadCoverImage(coverUrl: String?) {
-        if (!coverUrl.isNullOrEmpty()) {
-            binding.imgCover.tag = coverUrl
-            Glide.with(this)
-                .load(coverUrl)
-                .placeholder(R.drawable.cover_placeholder)
-                .error(R.drawable.cover_placeholder)
-                .into(binding.imgCover)
-        } else {
-            binding.imgCover.setImageResource(R.drawable.cover_placeholder)
-        }
     }
 
     private fun displayLastCalculatedBMI(bmiLastCalculated: Long) {
