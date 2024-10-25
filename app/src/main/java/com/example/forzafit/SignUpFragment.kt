@@ -26,7 +26,13 @@ class SignUpFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_sign_up, container, false)
         val nextButton: Button = view.findViewById(R.id.button_next_choose)
         val birthDateEditText: EditText = view.findViewById(R.id.editTextDate)
+        val alreadyHave : Button = view.findViewById(R.id.alreadyAccount)
 
+        alreadyHave.setOnClickListener() {
+            parentFragmentManager.beginTransaction()
+                .replace(R.id.fragment_container, LoginFragment())
+                .commit()
+        }
         auth = FirebaseAuth.getInstance()
         firestore = FirebaseFirestore.getInstance()
 

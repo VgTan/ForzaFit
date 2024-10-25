@@ -3,60 +3,61 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#7E4A2D">
+    android:background="#7E4A2D"
+    android:paddingBottom="80dp">
 
     <!-- Title -->
     <TextView
         android:id="@+id/title_explore"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Explore New People"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        android:textColor="#FFF"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="32dp"/>
+        android:layout_marginTop="32dp"
+        android:text="Explore New People"
+        android:textColor="#FFF"
+        android:textSize="24sp"
+        android:textStyle="bold" />
 
     <!-- Search Bar -->
     <EditText
         android:id="@+id/search_friend"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Search friends by Username"
-        android:drawableLeft="@android:drawable/ic_menu_search"
-        android:background="@drawable/search_bar_style"
-        android:padding="12dp"
-        android:textColor="#000"
         android:layout_below="@+id/title_explore"
-        android:layout_marginTop="16dp"
         android:layout_marginStart="24dp"
-        android:layout_marginEnd="24dp"/>
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="24dp"
+        android:background="@drawable/search_bar_style"
+        android:drawableLeft="@android:drawable/ic_menu_search"
+        android:hint="Search friends by Username"
+        android:padding="12dp"
+        android:textColor="#000" />
 
     <!-- RecyclerView for friend list -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_view"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
-        android:layout_below="@id/search_friend"
-        android:layout_marginTop="16dp"
-        android:padding="16dp"
         android:layout_above="@+id/button_friend"
+        android:layout_below="@id/search_friend"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_weight="1"
         android:background="@drawable/search_bar_style"
         android:dividerHeight="1dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"/>
+        android:padding="16dp" />
 
     <!-- Add Friend Floating Button -->
     <ImageButton
         android:id="@+id/button_friend"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="30dp"
         android:background="@drawable/addfriend"
         android:backgroundTint="@null"
         android:contentDescription="Friend"
-        android:elevation="8dp"
-        android:layout_margin="30dp"/>
+        android:elevation="8dp" />
 </RelativeLayout>

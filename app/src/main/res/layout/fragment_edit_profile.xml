@@ -8,8 +8,9 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
         android:orientation="vertical"
-        android:gravity="center_horizontal">
+        android:paddingBottom="80dp">
 
         <FrameLayout
             android:layout_width="match_parent"
@@ -43,22 +44,22 @@
                 android:layout_width="100dp"
                 android:layout_height="100dp"
                 android:layout_gravity="bottom|start"
-                android:scaleType="centerCrop"
-                android:src="@drawable/profile_placeholder"
-                android:background="@drawable/circle_shape"
-                android:padding="4dp"
                 android:layout_marginStart="16dp"
                 android:layout_marginBottom="0dp"
-                android:contentDescription="@string/edit_profile_picture" />
+                android:background="@drawable/circle_shape"
+                android:contentDescription="@string/edit_profile_picture"
+                android:padding="4dp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/profile_placeholder" />
 
             <View
                 android:layout_width="100dp"
                 android:layout_height="100dp"
                 android:layout_gravity="bottom|start"
-                android:scaleType="centerCrop"
-                android:background="@drawable/circle_overlay"
                 android:layout_marginStart="16dp"
-                android:layout_marginBottom="0dp" />
+                android:layout_marginBottom="0dp"
+                android:background="@drawable/circle_overlay"
+                android:scaleType="centerCrop" />
 
             <ImageView
                 android:id="@+id/imgAddPictureIcon"
@@ -76,11 +77,11 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="First Name"
-            android:textSize="16sp"
-            android:textColor="@color/white"
-            android:layout_marginStart="16dp"
             android:layout_gravity="start"
+            android:layout_marginStart="16dp"
+            android:text="First Name"
+            android:textColor="@color/white"
+            android:textSize="16sp"
             android:textStyle="bold" />
 
         <FrameLayout
@@ -93,13 +94,13 @@
                 android:id="@+id/editFirstName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="@drawable/rounded_background_2"
+                android:padding="8dp"
+                android:paddingEnd="36dp"
                 android:text=""
                 android:textColor="@color/textFill"
-                android:textStyle="bold"
                 android:textSize="16sp"
-                android:paddingEnd="36dp"
-                android:padding="8dp"
-                android:background="@drawable/rounded_background_2" />
+                android:textStyle="bold" />
 
             <ImageView
                 android:id="@+id/icEditFirstName"
@@ -107,18 +108,18 @@
                 android:layout_height="24dp"
                 android:layout_gravity="end|center_vertical"
                 android:layout_marginEnd="8dp"
-                android:src="@drawable/ic_edit2"
-                android:contentDescription="@string/edit_first_name" />
+                android:contentDescription="@string/edit_first_name"
+                android:src="@drawable/ic_edit2" />
         </FrameLayout>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Last Name"
-            android:textSize="16sp"
-            android:textColor="@color/white"
-            android:layout_marginStart="16dp"
             android:layout_gravity="start"
+            android:layout_marginStart="16dp"
+            android:text="Last Name"
+            android:textColor="@color/white"
+            android:textSize="16sp"
             android:textStyle="bold" />
 
         <FrameLayout
@@ -131,13 +132,13 @@
                 android:id="@+id/editLastName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="@drawable/rounded_background_2"
+                android:padding="8dp"
+                android:paddingEnd="36dp"
                 android:text=""
                 android:textColor="@color/textFill"
-                android:textStyle="bold"
                 android:textSize="16sp"
-                android:paddingEnd="36dp"
-                android:padding="8dp"
-                android:background="@drawable/rounded_background_2" />
+                android:textStyle="bold" />
 
             <ImageView
                 android:id="@+id/icEditLastName"
@@ -145,18 +146,18 @@
                 android:layout_height="24dp"
                 android:layout_gravity="end|center_vertical"
                 android:layout_marginEnd="8dp"
-                android:src="@drawable/ic_edit2"
-                android:contentDescription="@string/edit_last_name" />
+                android:contentDescription="@string/edit_last_name"
+                android:src="@drawable/ic_edit2" />
         </FrameLayout>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="start"
+            android:layout_marginStart="16dp"
             android:text="Age"
             android:textColor="@color/white"
-            android:layout_marginStart="16dp"
             android:textSize="16sp"
-            android:layout_gravity="start"
             android:textStyle="bold" />
 
         <FrameLayout
@@ -169,14 +170,14 @@
                 android:id="@+id/editAge"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="@drawable/rounded_background_2"
+                android:inputType="number"
+                android:padding="8dp"
+                android:paddingEnd="36dp"
                 android:text=""
                 android:textColor="@color/textFill"
-                android:textStyle="bold"
                 android:textSize="16sp"
-                android:paddingEnd="36dp"
-                android:padding="8dp"
-                android:inputType="number"
-                android:background="@drawable/rounded_background_2" />
+                android:textStyle="bold" />
 
             <ImageView
                 android:id="@+id/icEditAge"
@@ -184,17 +185,17 @@
                 android:layout_height="24dp"
                 android:layout_gravity="end|center_vertical"
                 android:layout_marginEnd="8dp"
-                android:src="@drawable/ic_edit2"
-                android:contentDescription="@string/edit_age" />
+                android:contentDescription="@string/edit_age"
+                android:src="@drawable/ic_edit2" />
         </FrameLayout>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Description"
-            android:textColor="@color/white"
             android:layout_gravity="start"
             android:layout_marginStart="16dp"
+            android:text="Description"
+            android:textColor="@color/white"
             android:textSize="16sp"
             android:textStyle="bold" />
 
@@ -208,54 +209,54 @@
                 android:id="@+id/editDescription"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text=""
-                android:textSize="16sp"
-                android:textColor="@color/textFill"
-                android:textStyle="bold"
-                android:paddingEnd="36dp"
-                android:padding="8dp"
-                android:lines="4"
+                android:background="@drawable/rounded_background_2"
                 android:gravity="top|start"
-                android:background="@drawable/rounded_background_2" />
+                android:lines="4"
+                android:padding="8dp"
+                android:paddingEnd="36dp"
+                android:text=""
+                android:textColor="@color/textFill"
+                android:textSize="16sp"
+                android:textStyle="bold" />
 
             <ImageView
                 android:id="@+id/icEditDescription"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:layout_gravity="end|top"
-                android:layout_marginEnd="8dp"
                 android:layout_marginTop="8dp"
-                android:src="@drawable/ic_edit2"
-                android:contentDescription="@string/edit_description" />
+                android:layout_marginEnd="8dp"
+                android:contentDescription="@string/edit_description"
+                android:src="@drawable/ic_edit2" />
         </FrameLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
+            android:layout_marginBottom="20dp"
             android:gravity="center_horizontal"
-            android:layout_marginBottom="20dp">
+            android:orientation="horizontal">
 
             <Button
                 android:id="@+id/btnClose"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Close"
-                android:textSize="16sp"
                 android:layout_marginEnd="16dp"
-                android:backgroundTint="#4c4c4c" />
+                android:backgroundTint="#4c4c4c"
+                android:text="Close"
+                android:textSize="16sp" />
 
             <Button
                 android:id="@+id/btnSaveChanges"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Save Changes"
-                android:textSize="16sp"
-                android:textColor="@color/black"
-                android:drawableEnd="@drawable/ic_save"
                 android:backgroundTint="#C7FFD477"
+                android:drawableEnd="@drawable/ic_save"
+                android:drawablePadding="8dp"
                 android:paddingEnd="20dp"
-                android:drawablePadding="8dp" />
+                android:text="Save Changes"
+                android:textColor="@color/black"
+                android:textSize="16sp" />
 
         </LinearLayout>
     </LinearLayout>
