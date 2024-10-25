@@ -6,7 +6,6 @@ import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
 import android.view.LayoutInflater
-import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewOutlineProvider
@@ -44,13 +43,14 @@ class EditProfileFragment : Fragment() {
         auth = FirebaseAuth.getInstance()
         firestore = FirebaseFirestore.getInstance()
         storage = FirebaseStorage.getInstance()
+
+        // Setup outline clipping for circular shape
         binding.imgEditProfilePicture.apply {
             clipToOutline = true
             outlineProvider = ViewOutlineProvider.BACKGROUND
-
-
         }
 
+        // Load arguments passed from ProfileFragment
         arguments?.let {
             binding.editFirstName.setText(it.getString("firstName", ""))
             binding.editLastName.setText(it.getString("lastName", ""))
@@ -91,35 +91,6 @@ class EditProfileFragment : Fragment() {
         binding.imgEditCover.setOnClickListener {
             openImagePickerForCover()
         }
-
-        binding.imgAddCoverIcon.setOnTouchListener(DragTouchListener())
-    }
-
-    class DragTouchListener : View.OnTouchListener {
-        private var dX = 0f
-        private var dY = 0f
-
-        override fun onTouch(view: View, event: MotionEvent): Boolean {
-            when (event.action) {
-                MotionEvent.ACTION_DOWN -> {
-                    // Calculate the difference between the view's position and touch position
-                    dX = view.x - event.rawX
-                    dY = view.y - event.rawY
-                }
-                MotionEvent.ACTION_MOVE -> {
-                    // Move the view to the new position
-                    view.animate()
-                        .x(event.rawX + dX)
-                        .y(event.rawY + dY)
-                        .setDuration(0)
-                        .start()
-                }
-                MotionEvent.ACTION_UP -> {
-                    // Optional: Save the new position or perform a snap-to-grid
-                }
-            }
-            return true
-        }
     }
 
     private val imagePickerLauncher = registerForActivityResult(
@@ -127,22 +98,19 @@ class EditProfileFragment : Fragment() {
     ) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
             val selectedImageUri = result.data?.data
-            // Determine which image is being picked (profile or cover)
-            when {
-                profileImageUri != null -> {
-                    profileImageUri = selectedImageUri
-                    binding.imgEditProfilePicture.setImageURI(profileImageUri)
-                }
-                coverImageUri != null -> {
-                    coverImageUri = selectedImageUri
-                    binding.imgEditCover.setImageURI(coverImageUri)
-                }
+            // Determine which image is being picked and set the URI accordingly
+            if (profileImageUri != null) {
+                profileImageUri = selectedImageUri
+                binding.imgEditProfilePicture.setImageURI(profileImageUri)
+            } else if (coverImageUri != null) {
+                coverImageUri = selectedImageUri
+                binding.imgEditCover.setImageURI(coverImageUri)
             }
         }
     }
 
     private fun openImagePickerForProfile() {
-        profileImageUri = Uri.EMPTY
+        profileImageUri = Uri.EMPTY // Set a flag for profile image selection
         val intent = Intent(Intent.ACTION_GET_CONTENT)
         intent.type = "image/*"
         intent.addCategory(Intent.CATEGORY_OPENABLE)
@@ -150,7 +118,7 @@ class EditProfileFragment : Fragment() {
     }
 
     private fun openImagePickerForCover() {
-        coverImageUri = Uri.EMPTY
+        coverImageUri = Uri.EMPTY // Set a flag for cover image selection
         val intent = Intent(Intent.ACTION_GET_CONTENT)
         intent.type = "image/*"
         intent.addCategory(Intent.CATEGORY_OPENABLE)
@@ -162,14 +130,15 @@ class EditProfileFragment : Fragment() {
         val lastName = binding.editLastName.text.toString()
         val age = binding.editAge.text.toString()
         val description = binding.editDescription.text.toString()
-
         val userId = auth.currentUser?.uid ?: return
+
+        // Check if images need to be uploaded
         if (profileImageUri == null && coverImageUri == null) {
             Toast.makeText(requireContext(), "No image selected", Toast.LENGTH_SHORT).show()
             updateUserDataInFirestore(userId, firstName, lastName, age, description, null, null)
-            return
+        } else {
+            uploadImagesToStorage(userId, firstName, lastName, age, description)
         }
-        uploadImagesToStorage(userId, firstName, lastName, age, description)
     }
 
     private fun uploadImagesToStorage(
@@ -179,39 +148,40 @@ class EditProfileFragment : Fragment() {
         age: String,
         description: String
     ) {
+        var profileImageUrl: String? = null
+        var coverImageUrl: String? = null
+
         if (profileImageUri != null) {
-            uploadImageToStorage(userId, profileImageUri!!, "profile", firstName, lastName, age, description)
-        }
-        if (coverImageUri != null) {
-            uploadImageToStorage(userId, coverImageUri!!, "cover", firstName, lastName, age, description)
-        }
-    }
+            val fileName = "profile_images/$userId/${UUID.randomUUID()}.jpg"
+            val storageRef = storage.reference.child(fileName)
 
-    private fun uploadImageToStorage(
-        userId: String,
-        imageUri: Uri,
-        imageType: String,
-        firstName: String,
-        lastName: String,
-        age: String,
-        description: String
-    ) {
-        val fileName = "${imageType}_images/$userId/${UUID.randomUUID()}.jpg"
-        val storageRef = storage.reference.child(fileName)
-
-        storageRef.putFile(imageUri)
-            .addOnSuccessListener {
-                storageRef.downloadUrl.addOnSuccessListener { uri ->
-                    if (imageType == "profile") {
-                        updateUserDataInFirestore(userId, firstName, lastName, age, description, uri.toString(), null)
-                    } else if (imageType == "cover") {
-                        updateUserDataInFirestore(userId, firstName, lastName, age, description, null, uri.toString())
+            storageRef.putFile(profileImageUri!!)
+                .addOnSuccessListener {
+                    storageRef.downloadUrl.addOnSuccessListener { uri ->
+                        profileImageUrl = uri.toString()
+                        updateUserDataInFirestore(userId, firstName, lastName, age, description, profileImageUrl, coverImageUrl)
                     }
                 }
-            }
-            .addOnFailureListener { e ->
-                Toast.makeText(requireContext(), "Upload failed: ${e.message}", Toast.LENGTH_LONG).show()
-            }
+                .addOnFailureListener { e ->
+                    Toast.makeText(requireContext(), "Failed to upload profile image: ${e.message}", Toast.LENGTH_SHORT).show()
+                }
+        }
+
+        if (coverImageUri != null) {
+            val fileName = "cover_images/$userId/${UUID.randomUUID()}.jpg"
+            val storageRef = storage.reference.child(fileName)
+
+            storageRef.putFile(coverImageUri!!)
+                .addOnSuccessListener {
+                    storageRef.downloadUrl.addOnSuccessListener { uri ->
+                        coverImageUrl = uri.toString()
+                        updateUserDataInFirestore(userId, firstName, lastName, age, description, profileImageUrl, coverImageUrl)
+                    }
+                }
+                .addOnFailureListener { e ->
+                    Toast.makeText(requireContext(), "Failed to upload cover image: ${e.message}", Toast.LENGTH_SHORT).show()
+                }
+        }
     }
 
     private fun updateUserDataInFirestore(
@@ -230,7 +200,7 @@ class EditProfileFragment : Fragment() {
             "description" to description
         )
 
-        profileImageUrl?.let { updatedUserData["profileImageUrl"] = it }
+        profileImageUrl?.let { updatedUserData["imageUrl"] = it }
         coverImageUrl?.let { updatedUserData["coverImageUrl"] = it }
 
         firestore.collection("users").document(userId)
@@ -247,5 +217,5 @@ class EditProfileFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
-    }
+        }
 }
