@@ -61,6 +61,7 @@ class MainActivity : AppCompatActivity() {
         var selectedFragment: Fragment? = null
 
         when (item.itemId) {
+            R.id.nav_home -> selectedFragment = HomeFragment()
             R.id.nav_search -> selectedFragment = SearchFragment()
             R.id.nav_setting -> selectedFragment = SettingFragment()
             R.id.nav_user -> selectedFragment = ProfileFragment()
