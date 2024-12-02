@@ -26,7 +26,13 @@ class SignUpFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_sign_up, container, false)
         val nextButton: Button = view.findViewById(R.id.button_next_choose)
         val birthDateEditText: EditText = view.findViewById(R.id.editTextDate)
+        val alreadyHave : Button = view.findViewById(R.id.alreadyAccount)
 
+        alreadyHave.setOnClickListener() {
+            parentFragmentManager.beginTransaction()
+                .replace(R.id.fragment_container, LoginFragment())
+                .commit()
+        }
         auth = FirebaseAuth.getInstance()
         firestore = FirebaseFirestore.getInstance()
 
@@ -39,19 +45,30 @@ class SignUpFragment : Fragment() {
             val password = view.findViewById<EditText>(R.id.input_password).text.toString()
             val firstName = view.findViewById<EditText>(R.id.input_first_name).text.toString()
             val lastName = view.findViewById<EditText>(R.id.input_last_name).text.toString()
+            val userName = view.findViewById<EditText>(R.id.input_username).text.toString()
             val birthDate = birthDateEditText.text.toString()
             val height = view.findViewById<EditText>(R.id.input_height).text.toString()
             val weight = view.findViewById<EditText>(R.id.input_weight).text.toString()
             val targetWeight = view.findViewById<EditText>(R.id.input_target_weight).text.toString()
 
-            registerUser(email, password, firstName, lastName, birthDate, height, weight, targetWeight)
+            registerUser(email, password, firstName, lastName, userName, birthDate, height, weight, targetWeight)
         }
 
         return view
     }
 
-    private fun registerUser(email: String, password: String, firstName: String, lastName: String,
+    private fun registerUser(email: String, password: String, firstName: String, lastName: String, userName: String,
                              birthDate: String, height: String, weight: String, targetWeight: String) {
+        // Perhitungan BMI
+        val heightValue = height.toDoubleOrNull() ?: 0.0
+        val weightValue = weight.toDoubleOrNull() ?: 0.0
+        val bmi = if (heightValue > 0 && weightValue > 0) {
+            val heightInMeters = heightValue / 100 // Konversi tinggi ke meter
+            weightValue / (heightInMeters * heightInMeters)
+        } else {
+            null // Jika input tidak valid, BMI tidak dihitung
+        }
+
         auth.createUserWithEmailAndPassword(email, password)
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
@@ -59,12 +76,14 @@ class SignUpFragment : Fragment() {
                     val userData = hashMapOf(
                         "firstName" to firstName,
                         "lastName" to lastName,
+                        "userName" to userName,
                         "birthDate" to birthDate,
                         "height" to height,
                         "weight" to weight,
                         "targetWeight" to targetWeight,
                         "xp" to 0,
                         "level" to 0,
+                        "BMI" to (bmi?.let { "%.2f".format(it) } ?: "Invalid"),
                         "bmiLastCalculated" to System.currentTimeMillis()
                     )
 

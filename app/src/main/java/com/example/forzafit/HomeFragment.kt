@@ -31,7 +31,8 @@ class HomeFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_home, container, false)
-
+        (activity as MainActivity).ShowBottomNav()
+        (activity as MainActivity).HideNavtools()
         // Initialize views
         tvWelcome = view.findViewById(R.id.tvWelcome)
         imgBearAvatar = view.findViewById(R.id.imgBearAvatar)
