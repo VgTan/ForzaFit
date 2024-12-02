@@ -23,9 +23,9 @@
     <string name="edit_description">Edit Description</string>
     <string name="close">Close</string>
     <string name="save_changes">Save Changes</string>
-        <string-array name="text_size_options">
-            <item>Small</item>
-            <item>Medium</item>
-            <item>Large</item>
-        </string-array>
+    <string-array name="text_size_options">
+        <item>Small</item>
+        <item>Medium</item>
+        <item>Large</item>
+    </string-array>
 </resources>

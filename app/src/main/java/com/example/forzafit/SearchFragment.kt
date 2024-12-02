@@ -51,9 +51,12 @@ class SearchFragment : Fragment() {
 
         val buttonFriend: ImageButton = view.findViewById(R.id.button_friend)
         buttonFriend.setOnClickListener {
-            // Start FriendListActivity when the button is clicked
-            val intent = Intent(requireContext(), FriendActivity::class.java)
-            startActivity(intent)
+            // Replace current fragment with FriendFragment
+            val fragmentManager = parentFragmentManager
+            val transaction = fragmentManager.beginTransaction()
+            transaction.replace(R.id.fragment_container, FriendFragment())
+            transaction.addToBackStack(null) // Optional: Adds this transaction to the back stack
+            transaction.commit()
         }
 
         return view
