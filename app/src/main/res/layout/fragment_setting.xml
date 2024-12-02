@@ -1,0 +1,279 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#4A2E1E"
+    android:padding="16dp">
+
+    <!-- Parent LinearLayout to wrap all content -->
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <!-- Setting Title centered -->
+        <TextView
+            android:id="@+id/setting_title"
+            android:layout_width="wrap_content"
+            android:layout_height="60dp"
+            android:text="Settings"
+            android:textStyle="bold"
+            android:textColor="#ffffff"
+            android:textSize="30sp"
+            android:padding="8dp"
+            android:background="?android:attr/selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true"
+            android:layout_gravity="center"
+            android:layout_marginBottom="40dp"/>
+
+        <!-- Section Accounts (Accordion) -->
+        <TextView
+            android:id="@+id/accounts_title"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:text="Accounts"
+            android:textStyle="bold"
+            android:textColor="#ffffff"
+            android:textSize="18sp"
+            android:padding="8dp"
+            android:background="?android:attr/selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true" />
+
+        <!-- Content for Accounts Section -->
+        <LinearLayout
+            android:id="@+id/accounts_content"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:padding="8dp">
+
+            <TextView
+                android:id="@+id/username_title"
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Username"
+                android:textColor="#ffffff" />
+
+            <EditText
+                android:id="@+id/username"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Enter Username"
+                android:textColorHint="@color/white"
+                android:padding="12dp"
+                android:textColor="#ffffff"/>
+
+            <Button
+                android:id="@+id/logout_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Logout"
+                android:layout_marginTop="8dp"
+                android:layout_gravity="center" />
+
+            <Button
+                android:id="@+id/delete_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Delete Account"
+                android:layout_marginTop="8dp"
+                android:layout_gravity="center" />
+        </LinearLayout>
+
+        <!-- Section Privacy & Safety (Accordion) -->
+        <TextView
+            android:id="@+id/privacy_title"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:text="Privacy and Safety"
+            android:textStyle="bold"
+            android:textColor="#ffffff"
+            android:textSize="18sp"
+            android:padding="8dp"
+            android:background="?android:attr/selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true" />
+
+        <!-- Content for Privacy & Safety Section -->
+        <LinearLayout
+            android:id="@+id/privacy_content"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:padding="8dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="8dp">
+
+                <TextView
+                    android:id="@+id/activity_status"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="Show Your Activity"
+                    android:textColor="#ffffff"
+                    android:layout_weight="1" />
+
+                <Switch
+                    android:id="@+id/switch_activity_status"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="8dp">
+
+                <TextView
+                    android:id="@+id/bmi_status"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="Show Your BMI"
+                    android:textColor="#ffffff"
+                    android:layout_weight="1" />
+
+                <Switch
+                    android:id="@+id/switch_bmi_status"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <!-- Section BMI Calculator (Accordion) -->
+        <TextView
+            android:id="@+id/calculator_title"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:text="BMI Calculator"
+            android:textStyle="bold"
+            android:textColor="#ffffff"
+            android:textSize="18sp"
+            android:padding="8dp"
+            android:background="?android:attr/selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true" />
+
+        <LinearLayout
+            android:id="@+id/calculator_content"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:padding="8dp">
+
+            <TextView
+                android:id="@+id/height_title"
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Height"
+                android:textColor="#ffffff" />
+
+            <EditText
+                android:id="@+id/input_height"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Enter Your Height"
+                android:padding="12dp"
+                android:textColorHint="@color/white"
+                android:layout_marginTop="8dp"
+                android:textColor="#ffffff"
+                android:inputType="numberDecimal" />
+
+            <TextView
+                android:id="@+id/weight_title"
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Weight"
+                android:textColor="#ffffff" />
+
+            <EditText
+                android:id="@+id/input_weight"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Enter Your Weight"
+                android:padding="12dp"
+                android:textColorHint="@color/white"
+                android:layout_marginTop="8dp"
+                android:textColor="#ffffff"
+                android:inputType="numberDecimal" />
+
+            <TextView
+                android:id="@+id/your_bmi"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Your BMI: "
+                android:padding="12dp"
+                android:layout_marginTop="8dp"
+                android:textColor="#ffffff" />
+
+        </LinearLayout>
+
+        <!-- Section Accessibility (Accordion) -->
+        <TextView
+            android:id="@+id/accesibility_title"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:text="Accessibility"
+            android:textStyle="bold"
+            android:textColor="#ffffff"
+            android:textSize="18sp"
+            android:padding="8dp"
+            android:background="?android:attr/selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true" />
+
+        <LinearLayout
+            android:id="@+id/accesibility_content"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:padding="8dp">
+
+            <TextView
+                android:id="@+id/contrast_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Contrast"
+                android:textColor="#ffffff"
+                android:layout_marginTop="8dp" />
+
+            <SeekBar
+                android:id="@+id/contrast_bar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_gravity="center" />
+
+            <!-- Text Size Option -->
+            <TextView
+                android:id="@+id/text_size_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Text Size"
+                android:textColor="#ffffff"
+                android:layout_marginTop="8dp" />
+
+            <Spinner
+                android:id="@+id/text_size_spinner"
+                android:textColorHint="@color/white"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:entries="@array/text_size_options" />
+
+        </LinearLayout>
+    </LinearLayout>
+</ScrollView>
