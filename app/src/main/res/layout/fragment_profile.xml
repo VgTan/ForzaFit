@@ -172,7 +172,7 @@
                         android:id="@+id/txtPushUp"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Push Up   x10"
+                        android:text=""
                         android:textSize="14sp"
                         android:layout_marginTop="8dp"
                         android:textColor="@color/white" />
@@ -181,7 +181,7 @@
                         android:id="@+id/txtSitUp"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Sit Up   x10"
+                        android:text=""
                         android:textSize="14sp"
                         android:layout_marginTop="4dp"
                         android:textColor="@color/white" />
@@ -190,7 +190,7 @@
                         android:id="@+id/txtJogging"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Jogging   200km"
+                        android:text=""
                         android:textSize="14sp"
                         android:layout_marginTop="4dp"
                         android:textColor="@color/white" />
