@@ -78,7 +78,7 @@ class HomeFragment : Fragment() {
                     if (document.exists()) {
                         val firstName = document.getString("firstName") ?: "[Name]"
                         val lastName = document.getString("lastName") ?: "[Name]"
-                        val userName = "$firstName $lastName"
+                        val userName = document.getString("userName") ?: "[Name]"
                         val xp = document.getLong("xp")?.toInt() ?: 0
                         val level = document.getLong("level")?.toInt() ?: 1
 
