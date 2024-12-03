@@ -29,17 +29,12 @@ class PushUpFragment : Fragment() {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_push_up, container, false)
 
-        // Initialize views
         repetitionTextView = view.findViewById(R.id.repetitionTextView)
         finishButton = view.findViewById(R.id.btnFinishPushUp)
 
-        // Retrieve the task ID from arguments
         taskId = arguments?.getString("taskId")
-
-        // Load the task details based on the task ID
         loadTaskDetails()
 
-        // Handle finish button click
         finishButton.setOnClickListener {
             if (repetitions > 0) {
                 updateXPAndCompleteTask(repetitions)
@@ -57,14 +52,12 @@ class PushUpFragment : Fragment() {
             val userId = user.uid
 
             taskId?.let { id ->
-                // Fetch the task from Firestore using the task ID
                 db.collection("users").document(userId)
                     .collection("to_do_list").document(id)
                     .get()
                     .addOnSuccessListener { document ->
                         if (document.exists()) {
-                            val value = document.getString("value")?.toIntOrNull() ?: 0
-                            repetitions = value
+                            repetitions = document.getString("value")?.toIntOrNull() ?: 0
                             repetitionTextView.text = "Repetitions: $repetitions times"
                         } else {
                             Toast.makeText(context, "Task not found", Toast.LENGTH_SHORT).show()
@@ -82,27 +75,49 @@ class PushUpFragment : Fragment() {
         currentUser?.let { user ->
             val userId = user.uid
 
-            // Get the current user data from Firestore
             db.collection("users").document(userId)
                 .get()
                 .addOnSuccessListener { document ->
                     if (document.exists()) {
+                        // Current XP and Level
                         val currentXP = document.getLong("xp")?.toInt() ?: 0
                         val currentLevel = document.getLong("level")?.toInt() ?: 1
                         val newXP = currentXP + reps
 
-                        // Calculate level up and remaining XP
                         var updatedXP = newXP
                         var updatedLevel = currentLevel
 
+                        // Calculate level up
                         while (updatedXP >= 100) {
                             updatedXP -= 100
                             updatedLevel += 1
                         }
 
-                        // Update XP, level, and mark task as complete
+                        // Current progress for "Today"
+                        val currentPushUpsToday = document.getLong("pushUpsToday")?.toInt() ?: 0
+                        val lastUpdatedToday = document.getLong("lastUpdatedToday") ?: 0L
+                        val currentTime = System.currentTimeMillis()
+
+                        // Check if 24 hours have passed since the last update
+                        val updatedPushUpsToday = if (currentTime - lastUpdatedToday < 24 * 60 * 60 * 1000) {
+                            currentPushUpsToday + reps
+                        } else {
+                            reps // Reset progress if 24 hours have passed
+                        }
+
+                        // Update Firestore
                         db.collection("users").document(userId)
-                            .update(mapOf("xp" to updatedXP, "level" to updatedLevel))
+                            .update(
+                                mapOf(
+                                    "xp" to updatedXP,
+                                    "level" to updatedLevel,
+                                    "pushUpsThisWeek" to (document.getLong("pushUpsThisWeek")?.toInt()
+                                        ?: 0) + reps,
+                                    "pushUpsToday" to updatedPushUpsToday,
+                                    "lastUpdatedToday" to currentTime,
+                                    "lastUpdated" to currentTime
+                                )
+                            )
                             .addOnSuccessListener {
                                 markTaskAsComplete()
                             }
@@ -122,19 +137,15 @@ class PushUpFragment : Fragment() {
         currentUser?.let { user ->
             val userId = user.uid
             taskId?.let { id ->
-                // Get current time in "dd/MM/yyyy HH:mm:ss" format
-                val currentTime = SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault()).format(Date())
+                val currentTime =
+                    SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault()).format(Date())
 
-                // Update the task status to 'complete' and add the finished time
                 db.collection("users").document(userId)
                     .collection("to_do_list").document(id)
-                    .update(mapOf(
-                        "status" to "complete",
-                        "finished_time" to currentTime
-                    ))
+                    .update(mapOf("status" to "complete", "finished_time" to currentTime))
                     .addOnSuccessListener {
                         Toast.makeText(context, "Task marked as complete", Toast.LENGTH_SHORT).show()
-                        navigateToHomeFragment()
+                        navigateToProfileFragment()
                     }
                     .addOnFailureListener {
                         Toast.makeText(context, "Failed to update task", Toast.LENGTH_SHORT).show()
@@ -143,9 +154,7 @@ class PushUpFragment : Fragment() {
         }
     }
 
-    private fun navigateToHomeFragment() {
-        parentFragmentManager.beginTransaction()
-            .replace(R.id.fragment_container, HomeFragment())
-            .commit()
+    private fun navigateToProfileFragment() {
+        parentFragmentManager.popBackStack()
     }
 }

@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewOutlineProvider
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
 import com.example.forzafit.databinding.FragmentProfileBinding
@@ -56,6 +57,34 @@ class ProfileFragment : Fragment() {
                 if (document != null) {
                     val firstName = document.getString("firstName") ?: ""
                     val lastName = document.getString("lastName") ?: ""
+                    val joggingThisWeek = document.getLong("joggingThisWeek")?.toInt() ?: 0
+                    val pushUpsThisWeek = document.getLong("pushUpsThisWeek")?.toInt() ?: 0
+                    val lastUpdated = document.getLong("lastUpdated") ?: 0L
+                    val currentTime = System.currentTimeMillis()
+                    val sevenDaysInMillis = 7 * 24 * 60 * 60 * 1000L
+
+                    // Check if 7 days have passed since the last update
+                    if (currentTime - lastUpdated > sevenDaysInMillis) {
+                        firestore.collection("users").document(userId)
+                            .update(
+                                mapOf(
+                                    "joggingThisWeek" to 0,
+                                    "pushUpsThisWeek" to 0,
+                                    "lastUpdated" to currentTime
+                                )
+                            )
+                            .addOnSuccessListener {
+                                binding.txtJogging.text = "Jogging  0 km"
+                                binding.txtPushUp.text = "Push Up  x0"
+                            }
+                            .addOnFailureListener {
+                                Toast.makeText(context, "Failed to reset weekly progress", Toast.LENGTH_SHORT).show()
+                            }
+                    } else {
+                        binding.txtJogging.text = "Jogging  $joggingThisWeek km"
+                        binding.txtPushUp.text = "Push Up  x$pushUpsThisWeek"
+                    }
+
                     val birthDate = document.getString("birthDate") ?: ""
                     val height = document.getString("height")?.toDoubleOrNull() ?: 0.0
                     val weight = document.getString("weight")?.toDoubleOrNull() ?: 0.0
@@ -71,6 +100,7 @@ class ProfileFragment : Fragment() {
                     binding.txtUserAge.text = "Age: $age"
                     binding.txtBMI.text = "BMI: %.1f".format(bmi)
                     binding.txtDescription.text = description
+
                     if (!profileImageUrl.isNullOrEmpty()) {
                         binding.imgProfile.tag = profileImageUrl
                         Glide.with(this)
@@ -84,7 +114,6 @@ class ProfileFragment : Fragment() {
                         outlineProvider = ViewOutlineProvider.BACKGROUND
                     }
 
-                    // Load updated cover image
                     if (!coverImageUrl.isNullOrEmpty()) {
                         binding.imgCover.tag = coverImageUrl
                         Glide.with(this)
@@ -93,13 +122,15 @@ class ProfileFragment : Fragment() {
                             .error(R.drawable.cover_placeholder)
                             .into(binding.imgCover)
                     }
+
                     displayLastCalculatedBMI(bmiLastCalculated)
                 }
             }
             .addOnFailureListener { e ->
-                // Handle the error here
+                Toast.makeText(context, "Failed to fetch user data: ${e.message}", Toast.LENGTH_SHORT).show()
             }
     }
+
 
     private fun displayLastCalculatedBMI(bmiLastCalculated: Long) {
         if (bmiLastCalculated == 0L) {
