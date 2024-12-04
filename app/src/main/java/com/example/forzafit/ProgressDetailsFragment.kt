@@ -118,7 +118,6 @@ class ProgressDetailsFragment : Fragment() {
                         binding.txtJoggingCountWeek.text = "${joggingThisWeek}km"
                         binding.txtCaloriesCountWeek.text = "%.2f kkal".format(caloriesThisWeek)
                     } else {
-                        // Data is older than 7 days - reset progress
                         resetThisWeekProgress(userId)
                     }
                 }
