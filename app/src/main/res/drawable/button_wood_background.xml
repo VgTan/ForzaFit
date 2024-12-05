@@ -9,20 +9,15 @@
             </item>
             <item>
                 <shape>
-                    <solid android:color="#66000000" /> <!-- Dark overlay for pressed -->
+                    <solid android:color="#66000000" />
                 </shape>
             </item>
         </layer-list>
     </item>
 
-    <!-- Default State -->
     <item>
-        <layer-list>
-            <item>
-                <bitmap
-                    android:src="@drawable/wood_texture"
-                    android:scaleType="fitXY" />
-            </item>
-        </layer-list>
+        <bitmap
+            android:src="@drawable/wood_texture"
+            android:scaleType="fitXY" />
     </item>
 </selector>

@@ -44,6 +44,7 @@ android {
 }
 
 dependencies {
+    implementation ("nl.dionsegijn:konfetti-xml:2.0.2")
     implementation(platform("com.google.firebase:firebase-bom:33.4.0"))
     implementation("com.google.firebase:firebase-analytics")
     implementation("androidx.navigation:navigation-fragment-ktx:2.7.3")
