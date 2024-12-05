@@ -42,9 +42,9 @@
             android:id="@+id/exerciseTypeSpinner"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:paddingEnd="40dp"
             android:background="@drawable/spinner_with_border"
-            android:gravity="center_vertical" />
+            android:gravity="center_vertical"
+            android:paddingEnd="40dp" />
 
         <ImageView
             android:layout_width="24dp"

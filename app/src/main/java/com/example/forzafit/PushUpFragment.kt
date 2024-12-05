@@ -95,14 +95,34 @@ class PushUpFragment : Fragment() {
 
                         // Current progress for "Today"
                         val currentPushUpsToday = document.getLong("pushUpsToday")?.toInt() ?: 0
+                        val currentPushUpsThisWeek = document.getLong("pushUpsThisWeek")?.toInt() ?: 0
+                        val currentPushUpsLast3Months = document.getLong("pushUpsLast3Months")?.toInt() ?: 0
+
                         val lastUpdatedToday = document.getLong("lastUpdatedToday") ?: 0L
+                        val lastUpdatedWeek = document.getLong("lastUpdatedWeek") ?: 0L
+                        val lastUpdated3Months = document.getLong("lastUpdated3Months") ?: 0L
+
                         val currentTime = System.currentTimeMillis()
 
-                        // Check if 24 hours have passed since the last update
+                        // Update Today's progress
                         val updatedPushUpsToday = if (currentTime - lastUpdatedToday < 24 * 60 * 60 * 1000) {
                             currentPushUpsToday + reps
                         } else {
                             reps // Reset progress if 24 hours have passed
+                        }
+
+                        // Update This Week's progress
+                        val updatedPushUpsThisWeek = if (currentTime - lastUpdatedWeek < 7 * 24 * 60 * 60 * 1000) {
+                            currentPushUpsThisWeek + reps
+                        } else {
+                            reps // Reset progress if the week has passed
+                        }
+
+                        // Update Last 3 Months' progress
+                        val updatedPushUpsLast3Months = if (currentTime - lastUpdated3Months < 3 * 30.44 * 24 * 60 * 60 * 1000) {
+                            currentPushUpsLast3Months + reps
+                        } else {
+                            reps // Reset progress if the 3 months have passed
                         }
 
                         // Update Firestore
@@ -111,11 +131,12 @@ class PushUpFragment : Fragment() {
                                 mapOf(
                                     "xp" to updatedXP,
                                     "level" to updatedLevel,
-                                    "pushUpsThisWeek" to (document.getLong("pushUpsThisWeek")?.toInt()
-                                        ?: 0) + reps,
                                     "pushUpsToday" to updatedPushUpsToday,
+                                    "pushUpsThisWeek" to updatedPushUpsThisWeek,
+                                    "pushUpsLast3Months" to updatedPushUpsLast3Months,
                                     "lastUpdatedToday" to currentTime,
-                                    "lastUpdated" to currentTime
+                                    "lastUpdatedWeek" to currentTime,
+                                    "lastUpdated3Months" to currentTime
                                 )
                             )
                             .addOnSuccessListener {
