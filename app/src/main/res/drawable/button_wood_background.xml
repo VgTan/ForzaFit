@@ -1,0 +1,28 @@
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Pressed State -->
+    <item android:state_pressed="true">
+        <layer-list>
+            <item>
+                <bitmap
+                    android:src="@drawable/wood_texture"
+                    android:scaleType="fitXY" />
+            </item>
+            <item>
+                <shape>
+                    <solid android:color="#66000000" /> <!-- Dark overlay for pressed -->
+                </shape>
+            </item>
+        </layer-list>
+    </item>
+
+    <!-- Default State -->
+    <item>
+        <layer-list>
+            <item>
+                <bitmap
+                    android:src="@drawable/wood_texture"
+                    android:scaleType="fitXY" />
+            </item>
+        </layer-list>
+    </item>
+</selector>

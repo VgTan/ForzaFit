@@ -12,6 +12,7 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import android.view.animation.AnimationUtils
 
 class HomeFragment : Fragment() {
 
@@ -45,9 +46,21 @@ class HomeFragment : Fragment() {
         // Fetch user data from Firestore
         fetchUserData()
 
+        val buttonClickAnimation = AnimationUtils.loadAnimation(requireContext(), R.anim.button_click)
+        val bounceAnimation = AnimationUtils.loadAnimation(requireContext(), R.anim.bounce)
+
+        // Apply custom BounceInterpolator
+        val interpolator = BounceInterpolator(0.3, 15.0) // Customize amplitude & frequency
+        bounceAnimation.interpolator = interpolator
+
+        // Start animation
+        imgBearAvatar.startAnimation(bounceAnimation)
+
         // Set onClick for 'Go Level Up' button
         btnLevelUp.setOnClickListener {
             // Navigate to AddTaskFragment
+            it.startAnimation(buttonClickAnimation)
+
             parentFragmentManager.beginTransaction()
                 .replace(R.id.fragment_container, AddTaskFragment())
                 .addToBackStack(null)
@@ -56,6 +69,7 @@ class HomeFragment : Fragment() {
 
         // Set onClick for 'Go To To-Do' button
         btnToDo.setOnClickListener {
+            it.startAnimation(buttonClickAnimation)
             // Navigate to ToDoFragment
             parentFragmentManager.beginTransaction()
                 .replace(R.id.fragment_container, ToDoFragment())

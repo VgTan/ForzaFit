@@ -30,9 +30,11 @@
         android:layout_width="200dp"
         android:layout_height="50dp"
         android:layout_marginTop="16dp"
-        android:backgroundTint="@color/main"
+        android:background="@drawable/wood_texture"
         android:text="Go Level Up"
-        android:textColor="@color/white"
+        android:textColor="#FFFFFF"
+        android:padding="8dp"
+        android:textStyle="bold"
         app:layout_constraintTop_toBottomOf="@id/tvWelcome"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -43,15 +45,20 @@
         android:layout_width="200dp"
         android:layout_height="50dp"
         android:layout_marginTop="16dp"
-        android:backgroundTint="@color/main"
+        android:background="@drawable/button_wood_background"
         android:text="Go To To-Do"
-        android:textColor="@color/white"
+        android:textColor="#FFFFFF"
+        android:padding="8dp"
+        android:textStyle="bold"
         app:layout_constraintTop_toBottomOf="@id/btnLevelUp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5" />
 
     <!-- Bear Avatar -->
+
+    <!-- XP Text -->
+
     <ImageView
         android:id="@+id/imgBearAvatar"
         android:layout_width="200dp"
@@ -61,11 +68,11 @@
         android:src="@drawable/bear"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_bias="0.502"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/btnToDo" />
+        app:layout_constraintTop_toBottomOf="@id/btnToDo"
+        app:layout_constraintVertical_bias="0.324" />
 
-    <!-- XP Text -->
     <TextView
         android:id="@+id/tvExp"
         android:layout_width="wrap_content"
