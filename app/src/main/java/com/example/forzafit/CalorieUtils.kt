@@ -9,8 +9,8 @@ object CalorieUtils {
     private val db: FirebaseFirestore by lazy { FirebaseFirestore.getInstance() }
 
     /**
-     * Calculates calories burned based on the activity and metrics.
-     * Handles different reset intervals for today, this week, and last 3 months.
+     * Saves calories burned based on the activity, metric, and weekly weight.
+     * The weight is adjusted dynamically based on the current week.
      */
     fun saveCaloriesToFirebase(activity: String, metric: Int, onSuccess: () -> Unit, onFailure: (Exception) -> Unit) {
         val currentUser = auth.currentUser ?: return
@@ -20,7 +20,12 @@ object CalorieUtils {
             .get()
             .addOnSuccessListener { document ->
                 if (document != null) {
-                    val weight = document.getLong("weight")?.toInt() ?: 70 // Use 70 kg as fallback
+                    // Fetch weekly weight data and determine current weight
+                    val weeklyWeights = document.get("weeklyWeight") as? Map<String, Number>
+                    val currentWeekWeight = getCurrentWeekWeight(weeklyWeights)
+
+                    // Default weight fallback
+                    val weight = currentWeekWeight?.toInt() ?: 70
 
                     // Current time and last updated times
                     val currentTime = System.currentTimeMillis()
@@ -74,7 +79,7 @@ object CalorieUtils {
     }
 
     /**
-     * Calorie calculation logic for different activities.
+     * Calculates calories burned for the given activity.
      */
     private fun calculateCalories(activity: String, metric: Int, weight: Int): Double {
         return when (activity) {
@@ -88,5 +93,20 @@ object CalorieUtils {
             "sit_up" -> 0.15 * weight * metric
             else -> 0.0
         }
+    }
+
+    /**
+     * Retrieves the weight for the current week from weekly weights.
+     */
+    private fun getCurrentWeekWeight(weeklyWeights: Map<String, Number>?): Double? {
+        if (weeklyWeights == null) return null
+
+        // Calculate the current week based on a rolling 4-week cycle
+        val startDate = System.currentTimeMillis() - (4 * 7 * 24 * 60 * 60 * 1000L) // Example: 4 weeks ago
+        val millisInWeek = 7 * 24 * 60 * 60 * 1000L
+        val weeksSinceStart = ((System.currentTimeMillis() - startDate) / millisInWeek).toInt()
+        val currentWeekIndex = (weeksSinceStart % 4) + 1
+
+        return weeklyWeights["week$currentWeekIndex"]?.toDouble()
     }
 }
