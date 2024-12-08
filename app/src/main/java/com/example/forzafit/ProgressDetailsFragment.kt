@@ -34,35 +34,50 @@ class ProgressDetailsFragment : Fragment() {
             requireActivity().onBackPressed()
         }
 
-        fetchThisWeekData()
-        fetchTodayData()
+        fetchProgressData("Today")
+        fetchProgressData("ThisWeek")
+        fetchProgressData("Last3Months")
     }
 
-    private fun fetchTodayData() {
+    private fun fetchProgressData(period: String) {
         val userId = auth.currentUser?.uid ?: return
 
         firestore.collection("users").document(userId)
             .get()
             .addOnSuccessListener { document ->
                 if (document != null) {
-                    // Fetch data and timestamp
-                    val pushUpsToday = document.getLong("pushUpsToday")?.toInt() ?: 0
-                    val sitUpsToday = document.getLong("sitUpsToday")?.toInt() ?: 0
-                    val joggingToday = document.getLong("joggingToday")?.toInt() ?: 0
-                    val caloriesToday = document.getDouble("caloriesToday") ?: 0.0
-                    val lastUpdatedToday = document.getLong("lastUpdatedToday") ?: 0L
+                    // Fetch data for each exercise type
+                    val pushUps = document.getLong("pushUps$period")?.toInt() ?: 0
+                    val sitUps = document.getLong("sitUps$period")?.toInt() ?: 0
+                    val pullUps = document.getLong("pullUps$period")?.toInt() ?: 0
+                    val jogging = document.getLong("jogging$period")?.toInt() ?: 0 // In km
 
-                    // Check if the data is still within 24 hours
-                    val currentTime = System.currentTimeMillis()
-                    if (currentTime - lastUpdatedToday < 24 * 60 * 60 * 1000) {
-                        // Data is within 24 hours - populate fields
-                        binding.txtPushUpCountToday.text = "x$pushUpsToday"
-                        binding.txtSitUpCountToday.text = "x$sitUpsToday"
-                        binding.txtJoggingCountToday.text = "${joggingToday}km"
-                        binding.txtCaloriesCountToday.text = "%.2f kkal".format(caloriesToday)
-                    } else {
-                        // Data is older than 24 hours - reset progress
-                        resetTodayProgress(userId)
+                    // Calculate calories
+                    val calories = calculateCalories(pushUps, sitUps, pullUps, jogging)
+
+                    // Update UI
+                    when (period) {
+                        "Today" -> {
+                            binding.txtCaloriesCountToday.text = "%.2f kkal".format(calories)
+                            binding.txtPushUpCountToday.text = "x$pushUps"
+                            binding.txtSitUpCountToday.text = "x$sitUps"
+                            binding.txtPullUpCountToday.text = "x$pullUps"
+                            binding.txtJoggingCountToday.text = "${jogging}km"
+                        }
+                        "ThisWeek" -> {
+                            binding.txtCaloriesCountWeek.text = "%.2f kkal".format(calories)
+                            binding.txtPushUpCountWeek.text = "x$pushUps"
+                            binding.txtSitUpCountWeek.text = "x$sitUps"
+                            binding.txtPullUpCountWeek.text = "x$pullUps"
+                            binding.txtJoggingCountWeek.text = "${jogging}km"
+                        }
+                        "Last3Months" -> {
+                            binding.txtCaloriesCountMonths.text = "%.2f kkal".format(calories)
+                            binding.txtPushUpCountMonths.text = "x$pushUps"
+                            binding.txtSitUpCountMonths.text = "x$sitUps"
+                            binding.txtPullUpCountMonths.text = "x$pullUps"
+                            binding.txtJoggingCountMonths.text = "${jogging}km"
+                        }
                     }
                 }
             }
@@ -71,83 +86,18 @@ class ProgressDetailsFragment : Fragment() {
             }
     }
 
-    private fun resetTodayProgress(userId: String) {
-        val updates = mapOf(
-            "pushUpsToday" to 0,
-            "sitUpsToday" to 0,
-            "joggingToday" to 0,
-            "caloriesToday" to 0.0,
-            "lastUpdatedToday" to System.currentTimeMillis()
-        )
+    private fun calculateCalories(pushUps: Int, sitUps: Int, pullUps: Int, jogging: Int): Double {
+        // Define calorie burn rates
+        val pushUpRate = 0.3 // kcal per repetition
+        val sitUpRate = 0.4 // kcal per repetition
+        val pullUpRate = 1.0 // kcal per repetition
+        val joggingRate = 100.0 // kcal per kilometer
 
-        firestore.collection("users").document(userId)
-            .update(updates)
-            .addOnSuccessListener {
-                // Clear "Today" section fields
-                binding.txtPushUpCountToday.text = "x0"
-                binding.txtSitUpCountToday.text = "x0"
-                binding.txtJoggingCountToday.text = "0km"
-                binding.txtCaloriesCountToday.text = "0.00 kkal"
-            }
-            .addOnFailureListener {
-                // Handle failure (e.g., show a toast)
-            }
-    }
-
-
-    private fun fetchThisWeekData() {
-        val userId = auth.currentUser?.uid ?: return
-
-        firestore.collection("users").document(userId)
-            .get()
-            .addOnSuccessListener { document ->
-                if (document != null) {
-                    // Fetch data and timestamp
-                    val pushUpsThisWeek = document.getLong("pushUpsThisWeek")?.toInt() ?: 0
-                    val sitUpsThisWeek = document.getLong("sitUpsThisWeek")?.toInt() ?: 0
-                    val joggingThisWeek = document.getLong("joggingThisWeek")?.toInt() ?: 0
-                    val caloriesThisWeek = document.getDouble("caloriesThisWeek") ?: 0.0
-                    val lastUpdatedWeek = document.getLong("lastUpdatedWeek") ?: 0L
-
-                    // Check if the data is still within the week (7 days)
-                    val currentTime = System.currentTimeMillis()
-                    if (currentTime - lastUpdatedWeek < 7 * 24 * 60 * 60 * 1000) {
-                        // Data is within 7 days - populate fields
-                        binding.txtPushUpCountWeek.text = "x$pushUpsThisWeek"
-                        binding.txtSitUpCountWeek.text = "x$sitUpsThisWeek"
-                        binding.txtJoggingCountWeek.text = "${joggingThisWeek}km"
-                        binding.txtCaloriesCountWeek.text = "%.2f kkal".format(caloriesThisWeek)
-                    } else {
-                        resetThisWeekProgress(userId)
-                    }
-                }
-            }
-            .addOnFailureListener {
-                // Handle failure (e.g., show a toast)
-            }
-    }
-
-    private fun resetThisWeekProgress(userId: String) {
-        val updates = mapOf(
-            "pushUpsThisWeek" to 0,
-            "sitUpsThisWeek" to 0,
-            "joggingThisWeek" to 0,
-            "caloriesThisWeek" to 0.0,
-            "lastUpdatedWeek" to System.currentTimeMillis()
-        )
-
-        firestore.collection("users").document(userId)
-            .update(updates)
-            .addOnSuccessListener {
-                // Clear "This Week" section fields
-                binding.txtPushUpCountWeek.text = "x0"
-                binding.txtSitUpCountWeek.text = "x0"
-                binding.txtJoggingCountWeek.text = "0km"
-                binding.txtCaloriesCountWeek.text = "0.00 kkal"
-            }
-            .addOnFailureListener {
-                // Handle failure (e.g., show a toast)
-            }
+        // Calculate total calories
+        return (pushUps * pushUpRate) +
+                (sitUps * sitUpRate) +
+                (pullUps * pullUpRate) +
+                (jogging * joggingRate)
     }
 
     override fun onDestroyView() {

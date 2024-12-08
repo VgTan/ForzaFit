@@ -209,15 +209,49 @@ class JoggingFragment : Fragment(), OnMapReadyCallback {
                             updatedLevel += 1
                         }
 
+                        val currentJoggingToday = document.getLong("joggingToday")?.toInt() ?: 0
+                        val currentJoggingThisWeek = document.getLong("joggingThisWeek")?.toInt() ?: 0
+                        val currentJoggingLast3Months = document.getLong("joggingLast3Months")?.toInt() ?: 0
+
+                        val lastUpdatedToday = document.getLong("lastUpdatedToday") ?: 0L
+                        val lastUpdatedWeek = document.getLong("lastUpdatedWeek") ?: 0L
+                        val lastUpdated3Months = document.getLong("lastUpdated3Months") ?: 0L
+
+                        val currentTime = System.currentTimeMillis()
+
+                        // Update today's progress
+                        val updatedJoggingToday = if (currentTime - lastUpdatedToday < 24 * 60 * 60 * 1000) {
+                            currentJoggingToday + dist
+                        } else {
+                            dist // Reset today's progress
+                        }
+
+                        // Update this week's progress
+                        val updatedJoggingThisWeek = if (currentTime - lastUpdatedWeek < 7 * 24 * 60 * 60 * 1000) {
+                            currentJoggingThisWeek + dist
+                        } else {
+                            dist // Reset this week's progress
+                        }
+
+                        // Update last 3 months' progress
+                        val updatedJoggingLast3Months = if (currentTime - lastUpdated3Months < 3 * 30.44 * 24 * 60 * 60 * 1000) {
+                            currentJoggingLast3Months + dist
+                        } else {
+                            dist // Reset last 3 months' progress
+                        }
+
+                        // Update Firestore
                         db.collection("users").document(userId)
                             .update(
                                 mapOf(
                                     "xp" to updatedXP,
                                     "level" to updatedLevel,
-                                    "joggingThisWeek" to (document.getLong("joggingThisWeek")?.toInt()
-                                        ?: 0) + dist,
-                                    "joggingToday" to (document.getLong("joggingToday")?.toInt()
-                                        ?: 0) + dist
+                                    "joggingToday" to updatedJoggingToday,
+                                    "joggingThisWeek" to updatedJoggingThisWeek,
+                                    "joggingLast3Months" to updatedJoggingLast3Months,
+                                    "lastUpdatedToday" to currentTime,
+                                    "lastUpdatedWeek" to currentTime,
+                                    "lastUpdated3Months" to currentTime
                                 )
                             )
                             .addOnSuccessListener {

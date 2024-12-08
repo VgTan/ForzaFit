@@ -96,7 +96,32 @@ android:orientation="vertical">
                         android:id="@+id/txtPushUpCountToday"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="2"
+                        android:text=""
+                        android:textSize="20sp"
+                        android:textColor="@color/white" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:gravity="center">
+
+                    <TextView
+                        android:id="@+id/txtPullUpLabelToday"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Pull Up"
+                        android:textSize="20sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/white" />
+
+                    <TextView
+                        android:id="@+id/txtPullUpCountToday"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text=""
                         android:textSize="20sp"
                         android:textColor="@color/white" />
                 </LinearLayout>
@@ -121,7 +146,7 @@ android:orientation="vertical">
                         android:id="@+id/txtSitUpCountToday"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="3"
+                        android:text=""
                         android:textSize="20sp"
                         android:textColor="@color/white" />
                 </LinearLayout>
@@ -146,7 +171,7 @@ android:orientation="vertical">
                         android:id="@+id/txtJoggingCountToday"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="5km"
+                        android:text=""
                         android:textSize="20sp"
                         android:textColor="@color/white" />
                 </LinearLayout>
@@ -233,7 +258,32 @@ android:orientation="vertical">
                         android:id="@+id/txtPushUpCountWeek"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="10"
+                        android:text=""
+                        android:textSize="20sp"
+                        android:textColor="@color/white" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:gravity="center">
+
+                    <TextView
+                        android:id="@+id/txtPullUpLabelWeek"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Pull Up"
+                        android:textSize="20sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/white" />
+
+                    <TextView
+                        android:id="@+id/txtPullUpCountWeek"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text=""
                         android:textSize="20sp"
                         android:textColor="@color/white" />
                 </LinearLayout>
@@ -258,7 +308,7 @@ android:orientation="vertical">
                         android:id="@+id/txtSitUpCountWeek"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="10"
+                        android:text=""
                         android:textSize="20sp"
                         android:textColor="@color/white" />
                 </LinearLayout>
@@ -283,7 +333,7 @@ android:orientation="vertical">
                         android:id="@+id/txtJoggingCountWeek"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="10km"
+                        android:text=""
                         android:textSize="20sp"
                         android:textColor="@color/white" />
                 </LinearLayout>
@@ -315,7 +365,7 @@ android:orientation="vertical">
                         android:id="@+id/txtCaloriesCountWeek"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="34.52 kkal"
+                        android:text=""
                         android:textSize="20sp"
                         android:textColor="@color/white"
                         android:gravity="center" />
@@ -369,7 +419,32 @@ android:orientation="vertical">
                         android:id="@+id/txtPushUpCountMonths"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="54"
+                        android:text=""
+                        android:textSize="20sp"
+                        android:textColor="@color/white" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:gravity="center">
+
+                    <TextView
+                        android:id="@+id/txtPullUpLabelMonths"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Pull Up"
+                        android:textSize="20sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/white" />
+
+                    <TextView
+                        android:id="@+id/txtPullUpCountMonths"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text=""
                         android:textSize="20sp"
                         android:textColor="@color/white" />
                 </LinearLayout>
@@ -394,7 +469,7 @@ android:orientation="vertical">
                         android:id="@+id/txtSitUpCountMonths"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="39"
+                        android:text=""
                         android:textSize="20sp"
                         android:textColor="@color/white" />
                 </LinearLayout>
@@ -419,7 +494,7 @@ android:orientation="vertical">
                         android:id="@+id/txtJoggingCountMonths"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="103km"
+                        android:text=""
                         android:textSize="20sp"
                         android:textColor="@color/white" />
                 </LinearLayout>
@@ -451,7 +526,7 @@ android:orientation="vertical">
                         android:id="@+id/txtCaloriesCountMonths"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="103.23 kkal"
+                        android:text=""
                         android:textSize="20sp"
                         android:textColor="@color/white"
                         android:gravity="center" />
