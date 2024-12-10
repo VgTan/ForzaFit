@@ -3,12 +3,15 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/bgProfile"
+    android:fillViewport="true"
+    android:fitsSystemWindows="true"
     tools:context=".ProfileFragment">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:paddingBottom="80dp">
 
         <FrameLayout
             android:layout_width="match_parent"
@@ -81,30 +84,30 @@
                         android:textSize="14sp"
                         android:textColor="@color/white" />
                 </LinearLayout>
-                    <LinearLayout
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_gravity="end">
+
+                    <TextView
+                        android:id="@+id/txtBMI"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:layout_gravity="end">
+                        android:text=""
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/secondary" />
 
-                        <TextView
-                            android:id="@+id/txtBMI"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text=""
-                            android:textSize="14sp"
-                            android:textStyle="bold"
-                            android:textColor="@color/secondary" />
-
-                        <TextView
-                            android:id="@+id/txtLastCalculated"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text=""
-                            android:textSize="10sp"
-                            android:textColor="@color/white" />
-                    </LinearLayout>
+                    <TextView
+                        android:id="@+id/txtLastCalculated"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text=""
+                        android:textSize="10sp"
+                        android:textColor="@color/white" />
                 </LinearLayout>
+            </LinearLayout>
 
             <TextView
                 android:id="@+id/txtDescription"
@@ -122,26 +125,18 @@
                 android:layout_marginTop="4dp"
                 android:background="@color/white" />
 
+            <!-- New LineChart Section -->
             <FrameLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginTop="26dp">
+                android:layout_width="match_parent"
+                android:layout_height="300dp"
+                android:layout_marginTop="16dp">
 
-                <ImageView
-                    android:id="@+id/graphOutline"
-                    android:layout_width="350dp"
-                    android:layout_height="200dp"
-                    android:scaleType="fitXY"
-                    android:layout_margin="8dp"
-                    android:src="@drawable/outline_placeholder" />
-
-                <ImageView
-                    android:id="@+id/imgGraph"
-                    android:layout_width="350dp"
-                    android:layout_height="200dp"
-                    android:scaleType="fitXY"
-                    android:src="@drawable/graph_placeholder" />
+                <com.github.mikephil.charting.charts.LineChart
+                    android:id="@+id/lineChart"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_margin="16dp"
+                    android:background="@color/white" />
             </FrameLayout>
 
             <FrameLayout
