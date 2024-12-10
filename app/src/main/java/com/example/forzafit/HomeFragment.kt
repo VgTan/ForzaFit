@@ -53,7 +53,6 @@ class HomeFragment : Fragment() {
         tvLevel = view.findViewById(R.id.tvLevel)
         konfettiView = view.findViewById(R.id.konfettiView)
 
-
         // Fetch user data from Firestore
         fetchUserData()
 
@@ -63,16 +62,13 @@ class HomeFragment : Fragment() {
         // Start bounce animation for the avatar
         imgBearAvatar.startAnimation(bounceAnimation)
 
-
         // Set onClick listeners for buttons
         btnLevelUp.setOnClickListener {
-            showConfetti()
             it.startAnimation(buttonClickAnimation)
             parentFragmentManager.beginTransaction()
                 .replace(R.id.fragment_container, AddTaskFragment())
                 .addToBackStack(null)
                 .commit()
-
         }
 
         btnToDo.setOnClickListener {
