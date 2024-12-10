@@ -51,7 +51,7 @@ class HomeFragment : Fragment() {
         progressExp = view.findViewById(R.id.progressExp)
         tvExp = view.findViewById(R.id.tvExp)
         tvLevel = view.findViewById(R.id.tvLevel)
-        konfettiView = view.findViewById(R.id.konfettiView)
+//        konfettiView = view.findViewById(R.id.konfettiView)
 
         // Fetch user data from Firestore
         fetchUserData()

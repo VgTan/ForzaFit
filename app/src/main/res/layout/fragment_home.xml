@@ -59,13 +59,6 @@
 
     <!-- XP Text -->
 
-    <nl.dionsegijn.konfetti.xml.KonfettiView
-        android:id="@+id/konfettiView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:fadeOut="true"
-        tools:ignore="MissingConstraints" />
-
     <ImageView
         android:id="@+id/imgBearAvatar"
         android:layout_width="200dp"
