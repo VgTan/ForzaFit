@@ -22,6 +22,7 @@ class SettingFragment : Fragment() {
     private lateinit var delete: Button
     private lateinit var privacyTitle: TextView
     private lateinit var privacyContent: LinearLayout
+    private lateinit var BMIStatus: Switch
     private lateinit var calculatorTitle: TextView
     private lateinit var calculatorContent: LinearLayout
     private lateinit var inputHeight: EditText
@@ -47,6 +48,7 @@ class SettingFragment : Fragment() {
         delete = view.findViewById(R.id.delete_button)
         privacyTitle = view.findViewById(R.id.privacy_title)
         privacyContent = view.findViewById(R.id.privacy_content)
+        BMIStatus = view.findViewById(R.id.switch_bmi_status)
         calculatorTitle = view.findViewById(R.id.calculator_title)
         calculatorContent = view.findViewById(R.id.calculator_content)
         inputHeight = view.findViewById(R.id.input_height)
@@ -59,83 +61,82 @@ class SettingFragment : Fragment() {
 
         // Set click listeners to toggle visibility for accordion effect
         accountsTitle.setOnClickListener {
+            toggleVisibility(accountsContent)
             if (userId != null) {
-                userId?.let { uid ->
-                    firestore.collection("users").document(uid)
-                        .get()
-                        .addOnSuccessListener { document ->
-                            if (document != null) {
-                                val user = document.getString("userName") ?: null
-                                userName.setText(user)
+                loadUserData()
+
+                submit.setOnClickListener {
+                    // Ambil nilai username dari EditText
+                    val updatedUserName = userName.text.toString()
+
+                    // Panggil fungsi untuk memperbarui data username
+                    updateUser(updatedUserName)
+                }
+
+                // Tambahkan fungsi untuk Logout dan Delete Account
+                logOut.setOnClickListener {
+                    auth.signOut() // Logout pengguna
+                    Toast.makeText(context, "Logged out successfully", Toast.LENGTH_SHORT).show()
+
+                    // Arahkan ke layar login
+                    parentFragmentManager.beginTransaction()
+                        .replace(R.id.fragment_container, LoginFragment())
+                        .commit()
+                }
+
+                delete.setOnClickListener {
+                    userId?.let { uid ->
+                        // Hapus data pengguna dari Firestore
+                        firestore.collection("users").document(uid)
+                            .delete()
+                            .addOnSuccessListener {
+                                Log.d("Firestore", "User data deleted from Firestore")
+                            }
+                            .addOnFailureListener { e ->
+                                Log.e("Firestore", "Error deleting user data", e)
+                            }
+                    }
+
+                    // Hapus akun pengguna dari Firebase Authentication
+                    auth.currentUser?.delete()
+                        ?.addOnCompleteListener { task ->
+                            if (task.isSuccessful) {
+                                Toast.makeText(context, "Account deleted successfully", Toast.LENGTH_SHORT).show()
+
+                                // Arahkan ke layar signup
+                                parentFragmentManager.beginTransaction()
+                                    .replace(R.id.fragment_container, SignUpFragment())
+                                    .commit()
+                            } else {
+                                Toast.makeText(context, "Failed to delete account: ${task.exception?.message}", Toast.LENGTH_SHORT).show()
                             }
                         }
-                        .addOnFailureListener { e ->
-                            Log.e("Firestore", "Error fetching user data", e)
-                        }
-                }
-            }
-
-            toggleVisibility(accountsContent)
-
-            submit.setOnClickListener {
-                // Ambil nilai username dari EditText
-                val updatedUserName = userName.text.toString()
-
-                // Panggil fungsi untuk memperbarui data username
-                updateUser(updatedUserName)
-            }
-
-            // Tambahkan fungsi untuk Logout dan Delete Account
-            logOut.setOnClickListener {
-                auth.signOut() // Logout pengguna
-                Toast.makeText(context, "Logged out successfully", Toast.LENGTH_SHORT).show()
-
-                // Arahkan ke layar login
-                parentFragmentManager.beginTransaction()
-                    .replace(R.id.fragment_container, LoginFragment())
-                    .commit()
-            }
-
-            delete.setOnClickListener {
-                userId?.let { uid ->
-                    // Hapus data pengguna dari Firestore
-                    firestore.collection("users").document(uid)
-                        .delete()
-                        .addOnSuccessListener {
-                            Log.d("Firestore", "User data deleted from Firestore")
-                        }
-                        .addOnFailureListener { e ->
-                            Log.e("Firestore", "Error deleting user data", e)
-                        }
                 }
 
-                // Hapus akun pengguna dari Firebase Authentication
-                auth.currentUser?.delete()
-                    ?.addOnCompleteListener { task ->
-                        if (task.isSuccessful) {
-                            Toast.makeText(context, "Account deleted successfully", Toast.LENGTH_SHORT).show()
-
-                            // Arahkan ke layar signup
-                            parentFragmentManager.beginTransaction()
-                                .replace(R.id.fragment_container, SignUpFragment())
-                                .commit()
-                        } else {
-                            Toast.makeText(context, "Failed to delete account: ${task.exception?.message}", Toast.LENGTH_SHORT).show()
-                        }
-                    }
+            } else{
+                Log.e("Auth", "User is not logged in")
+                Toast.makeText(requireContext(), "Please login first", Toast.LENGTH_SHORT).show()
             }
         }
 
 
+
         privacyTitle.setOnClickListener {
             toggleVisibility(privacyContent)
+            if(userId != null){
+                initializeBMIstatus()
+
+                BMIStatus.setOnCheckedChangeListener { _, isChecked ->
+                    updateBMIStatus(isChecked)
+                }
+            }
         }
 
         calculatorTitle.setOnClickListener {
             toggleVisibility(calculatorContent)
             if (userId != null) {
                 // Ambil data user dari Firestore
-                fetchUserData()
+                loadBMIUser()
                 // Setup BMI Calculation
                 setupBmiCalculation()
             } else {
@@ -150,7 +151,44 @@ class SettingFragment : Fragment() {
         return view
     }
 
-    private fun fetchUserData() {
+//    Fetch atau Load data dari firestore
+    private fun loadUserData() {
+        userId?.let { uid ->
+            firestore.collection("users").document(uid)
+                .get()
+                .addOnSuccessListener { document ->
+                    if (document != null && document.exists()) {
+                        val user = document.getString("userName")
+                        userName.setText(user) // Tampilkan username di EditText
+                    } else {
+                        Log.e("Firestore", "User document tidak ditemukan.")
+                    }
+                }
+                .addOnFailureListener { e ->
+                    Log.e("Firestore", "Error fetching user data", e)
+                }
+        }
+    }
+
+    private fun initializeBMIstatus(){
+        userId?.let { uid->
+            firestore.collection("users").document(uid)
+                .get()
+                .addOnSuccessListener { document ->
+                    if (document != null && document.exists()) {
+                        val showBMI = document.getBoolean("showBMI") ?: true
+                        BMIStatus.isChecked = showBMI
+                    } else {
+                        Log.e("Firestore", "Switch tidak ditemukan.")
+                    }
+                }
+                .addOnFailureListener { e ->
+                    Log.e("Firestore", "Error fetching showBMI status", e)
+                }
+        }
+    }
+
+    private fun loadBMIUser() {
         userId?.let { uid ->
             firestore.collection("users").document(uid)
                 .get()
@@ -178,6 +216,7 @@ class SettingFragment : Fragment() {
         }
     }
 
+//    function kalkulasi BMI
     private fun setupBmiCalculation() {
         val textWatcher = object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
@@ -218,7 +257,6 @@ class SettingFragment : Fragment() {
     }
 
 //    function updateFirestore
-
     private fun updateUser(userName: String) {
         userId?.let{uid ->
             val userUpdates = mapOf(
@@ -232,6 +270,22 @@ class SettingFragment : Fragment() {
                 }
                 .addOnFailureListener { e ->
                     Log.e("Firestore", "Error updating user data", e)
+                }
+        }
+    }
+
+    private fun updateBMIStatus(showBMI: Boolean) {
+        userId?.let { uid ->
+            val userUpdates = mapOf(
+                "showBMI" to showBMI
+            )
+            firestore.collection("users").document(uid)
+                .update(userUpdates)
+                .addOnSuccessListener {
+                    Log.d("Firestore", "BMI status updated successfully")
+                }
+                .addOnFailureListener { e ->
+                    Log.e("Firestore", "Error updating showBMI", e)
                 }
         }
     }
