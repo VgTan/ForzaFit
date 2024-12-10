@@ -22,12 +22,11 @@
 
     <!-- Finish Button -->
 
-    <ImageView
-        android:id="@+id/imageView7"
+    <com.google.android.gms.maps.MapView
+        android:id="@+id/joggingMapView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingBottom="10dp"
-        app:srcCompat="@drawable/minimap_jogging" />
+        android:layout_height="250dp"
+        android:layout_marginBottom="16dp" />
 
     <TextView
         android:id="@+id/distanceTextView"

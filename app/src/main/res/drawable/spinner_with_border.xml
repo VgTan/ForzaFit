@@ -1,0 +1,19 @@
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Black Border -->
+    <item>
+        <shape android:shape="rectangle">
+            <corners android:radius="24dp" />
+            <stroke
+                android:width="3dp"
+                android:color="#000000" />
+            <solid android:color="@android:color/transparent" />
+        </shape>
+    </item>
+
+    <item android:left="2dp" android:right="2dp" android:top="2dp" android:bottom="2dp">
+        <shape android:shape="rectangle">
+            <corners android:radius="24dp" />
+            <solid android:color="#EFCFA0" />
+        </shape>
+    </item>
+</layer-list>
