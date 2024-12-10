@@ -13,6 +13,8 @@ import android.widget.ImageView
 import android.widget.ListView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 
 class FriendFragment : Fragment() {
 
@@ -20,6 +22,7 @@ class FriendFragment : Fragment() {
     private lateinit var searchFriend: EditText
     private lateinit var adapter: ArrayAdapter<String>
     private lateinit var friendList: ArrayList<String>
+    private val db = FirebaseFirestore.getInstance()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -38,12 +41,13 @@ class FriendFragment : Fragment() {
         // Initialize views
         searchFriend = rootView.findViewById(R.id.searchFriend)
         friendListView = rootView.findViewById(R.id.friendListView)
-
-        // Sample friend list
-        friendList = arrayListOf("Aldo", "Beldo", "Celdo", "Ildo", "Eldo", "Feldo")
+        friendList = arrayListOf()
 
         adapter = ArrayAdapter(requireContext(), android.R.layout.simple_list_item_1, friendList)
         friendListView.adapter = adapter
+
+        // Load friends from Firestore
+        loadFriendsFromFirestore()
 
         // Handle friend selection
         friendListView.onItemClickListener = AdapterView.OnItemClickListener { parent, view, position, id ->
@@ -63,5 +67,30 @@ class FriendFragment : Fragment() {
         })
 
         return rootView
+    }
+
+    private fun loadFriendsFromFirestore() {
+        val currentUserId = FirebaseAuth.getInstance().currentUser?.uid
+        if (currentUserId == null) {
+            Toast.makeText(requireContext(), "Please log in to view friends.", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        // Ambil data teman dari Firestore
+        db.collection("users")
+            .document(currentUserId)
+            .collection("friends")
+            .get()
+            .addOnSuccessListener { documents ->
+                friendList.clear() // Bersihkan list sebelum mengisi data baru
+                for (document in documents) {
+                    val username = document.getString("username")
+                    username?.let { friendList.add(it) }
+                }
+                adapter.notifyDataSetChanged() // Update adapter dengan data baru
+            }
+            .addOnFailureListener { exception ->
+                Toast.makeText(requireContext(), "Failed to load friends: ${exception.message}", Toast.LENGTH_SHORT).show()
+            }
     }
 }
