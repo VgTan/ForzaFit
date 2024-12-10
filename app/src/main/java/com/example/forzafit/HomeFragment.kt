@@ -54,8 +54,8 @@ class HomeFragment : Fragment() {
         konfettiView = view.findViewById(R.id.konfettiView)
 
 
-        // Fetch user data from Firestore
-        fetchUserData()
+        // Fetch user data
+//        showConfetti()
 
         val buttonClickAnimation = AnimationUtils.loadAnimation(requireContext(), R.anim.button_click)
         val bounceAnimation = AnimationUtils.loadAnimation(requireContext(), R.anim.bounce)
@@ -66,7 +66,6 @@ class HomeFragment : Fragment() {
 
         // Set onClick listeners for buttons
         btnLevelUp.setOnClickListener {
-            showConfetti()
             it.startAnimation(buttonClickAnimation)
             parentFragmentManager.beginTransaction()
                 .replace(R.id.fragment_container, AddTaskFragment())
