@@ -63,7 +63,8 @@
         android:id="@+id/konfettiView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_gravity="center" />
+        app:fadeOut="true"
+        tools:ignore="MissingConstraints" />
 
     <ImageView
         android:id="@+id/imgBearAvatar"
