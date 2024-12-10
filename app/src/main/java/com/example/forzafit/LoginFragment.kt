@@ -59,6 +59,7 @@ class LoginFragment : Fragment() {
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     Toast.makeText(context, "Login successful", Toast.LENGTH_SHORT).show()
+                    (activity as? MainActivity)?.ShowBottomNav()    
                     parentFragmentManager.beginTransaction()
                         .replace(R.id.fragment_container, HomeFragment()) //INI NANTI DIUBAH
                         .commit()
