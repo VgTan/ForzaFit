@@ -63,6 +63,7 @@
         android:id="@+id/konfettiView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        app:fadeOut="true"
         tools:ignore="MissingConstraints" />
 
     <ImageView
@@ -84,7 +85,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:text="100 XP to next level"
+        android:text="50 XP to next level"
         android:textColor="@color/white"
         android:textSize="16sp"
         android:textStyle="bold"
