@@ -173,6 +173,15 @@
                         android:textColor="@color/white" />
 
                     <TextView
+                        android:id="@+id/txtPullUp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text=""
+                        android:textSize="14sp"
+                        android:layout_marginTop="8dp"
+                        android:textColor="@color/white" />
+
+                    <TextView
                         android:id="@+id/txtSitUp"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"

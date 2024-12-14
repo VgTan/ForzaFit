@@ -66,6 +66,8 @@ class ProfileFragment : Fragment() {
                     val lastName = document.getString("lastName") ?: ""
                     val joggingThisWeek = document.getLong("joggingThisWeek")?.toInt() ?: 0
                     val pushUpsThisWeek = document.getLong("pushUpsThisWeek")?.toInt() ?: 0
+                    val pullUpsThisWeek = document.getLong("pullUpsThisWeek")?.toInt() ?: 0
+                    val sitUpsThisWeek = document.getLong("sitUpsThisWeek")?.toInt() ?: 0
                     val lastUpdated = document.getLong("lastUpdated") ?: 0L
                     val currentTime = System.currentTimeMillis()
                     val sevenDaysInMillis = 7 * 24 * 60 * 60 * 1000L
@@ -77,12 +79,16 @@ class ProfileFragment : Fragment() {
                                 mapOf(
                                     "joggingThisWeek" to 0,
                                     "pushUpsThisWeek" to 0,
+                                    "pullUpsThisWeek" to 0,
+                                    "sitUpsThisWeek" to 0,
                                     "lastUpdated" to currentTime
                                 )
                             )
                             .addOnSuccessListener {
                                 binding.txtJogging.text = "Jogging  0 km"
                                 binding.txtPushUp.text = "Push Up  x0"
+                                binding.txtPullUp.text = "Pull Up x0"
+                                binding.txtSitUp.text = "Sit Up x0"
                             }
                             .addOnFailureListener {
                                 Toast.makeText(context, "Failed to reset weekly progress", Toast.LENGTH_SHORT).show()
@@ -90,6 +96,8 @@ class ProfileFragment : Fragment() {
                     } else {
                         binding.txtJogging.text = "Jogging  $joggingThisWeek km"
                         binding.txtPushUp.text = "Push Up  x$pushUpsThisWeek"
+                        binding.txtPullUp.text = "Pull Up  x$pullUpsThisWeek"
+                        binding.txtSitUp.text = "Sit Up  x$pullUpsThisWeek"
                     }
 
                     val birthDate = document.getString("birthDate") ?: ""
