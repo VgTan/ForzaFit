@@ -4,12 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
-import android.widget.Button
-import android.widget.EditText
-import android.widget.Spinner
-import android.widget.Toast
+import android.widget.*
 import androidx.fragment.app.Fragment
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -19,6 +14,7 @@ class AddTaskFragment : Fragment() {
     private lateinit var exerciseTypeSpinner: Spinner
     private lateinit var inputField: EditText
     private lateinit var submitButton: Button
+    private lateinit var progressBar: ProgressBar // Added ProgressBar
 
     private val auth: FirebaseAuth by lazy { FirebaseAuth.getInstance() }
     private val db: FirebaseFirestore by lazy { FirebaseFirestore.getInstance() }
@@ -29,39 +25,34 @@ class AddTaskFragment : Fragment() {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_add_task, container, false)
 
-        // Initialize views
         exerciseTypeSpinner = view.findViewById(R.id.exerciseTypeSpinner)
         inputField = view.findViewById(R.id.inputField)
         submitButton = view.findViewById(R.id.btnNext)
+        progressBar = view.findViewById(R.id.progressBar)
 
-        // Set up exercise type dropdown
         val exerciseTypes = arrayOf("Jogging", "Push Up", "Pull Up", "Sit Up")
         val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, exerciseTypes)
-        adapter.setDropDownViewResource(R.layout.custom_spinner_dropdown_item) // Use your custom layout here
+        adapter.setDropDownViewResource(R.layout.custom_spinner_dropdown_item)
         exerciseTypeSpinner.adapter = adapter
 
-
-        // Set listener for spinner to update input hint
         exerciseTypeSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
-                when (position) {
-                    0 -> inputField.hint = "Enter kilometers"
-                    1 -> inputField.hint = "Enter repetitions"
-                    2 -> inputField.hint = "Enter repetitions"
-                    3 -> inputField.hint = "Enter repetitions"
+                inputField.hint = when (position) {
+                    0 -> "Enter kilometers"
+                    else -> "Enter repetitions"
                 }
             }
 
             override fun onNothingSelected(parent: AdapterView<*>) {}
         }
 
-        // Set up submit button click event
         submitButton.setOnClickListener {
             val selectedExercise = exerciseTypeSpinner.selectedItem.toString()
             val inputValue = inputField.text.toString()
 
             if (inputValue.isNotEmpty()) {
-                // Save the task to Firestore
+                progressBar.visibility = View.VISIBLE
+                submitButton.isEnabled = false
                 saveTaskToFirestore(selectedExercise, inputValue)
             } else {
                 Toast.makeText(requireContext(), "Please enter a value.", Toast.LENGTH_SHORT).show()
@@ -76,21 +67,20 @@ class AddTaskFragment : Fragment() {
         currentUser?.let { user ->
             val userId = user.uid
 
-            // Task data to be saved
             val taskData = hashMapOf(
                 "exercise" to exercise,
                 "value" to value,
                 "status" to "incomplete"
             )
 
-            // Add task to Firestore under 'to_do_list' sub-collection
             db.collection("users").document(userId)
-                .collection("to_do_list") // Sub-collection under user document
-                .add(taskData) // Add a new task document
+                .collection("to_do_list")
+                .add(taskData)
                 .addOnSuccessListener {
                     Toast.makeText(requireContext(), "Task added successfully!", Toast.LENGTH_SHORT).show()
+                    progressBar.visibility = View.GONE
+                    submitButton.isEnabled = true
 
-                    // Navigate to the ToDoListFragment or another fragment
                     parentFragmentManager.beginTransaction()
                         .replace(R.id.fragment_container, ToDoFragment())
                         .addToBackStack(null)
@@ -98,9 +88,13 @@ class AddTaskFragment : Fragment() {
                 }
                 .addOnFailureListener { e ->
                     Toast.makeText(requireContext(), "Failed to add task: ${e.message}", Toast.LENGTH_SHORT).show()
+                    progressBar.visibility = View.GONE
+                    submitButton.isEnabled = true
                 }
         } ?: run {
             Toast.makeText(requireContext(), "User not logged in", Toast.LENGTH_SHORT).show()
+            progressBar.visibility = View.GONE
+            submitButton.isEnabled = true
         }
     }
 }

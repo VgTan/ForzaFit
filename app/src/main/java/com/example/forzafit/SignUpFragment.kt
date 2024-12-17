@@ -5,10 +5,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.EditText
-import android.widget.Toast
-import androidx.compose.material3.DatePickerDialog
+import android.widget.*
 import androidx.fragment.app.Fragment
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -18,21 +15,26 @@ class SignUpFragment : Fragment() {
 
     private lateinit var auth: FirebaseAuth
     private lateinit var firestore: FirebaseFirestore
+    private lateinit var progressBar: ProgressBar
+    private lateinit var nextButton: Button
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_sign_up, container, false)
-        val nextButton: Button = view.findViewById(R.id.button_next_choose)
-        val birthDateEditText: EditText = view.findViewById(R.id.editTextDate)
-        val alreadyHave : Button = view.findViewById(R.id.alreadyAccount)
 
-        alreadyHave.setOnClickListener() {
+        val birthDateEditText: EditText = view.findViewById(R.id.editTextDate)
+        val alreadyHave: Button = view.findViewById(R.id.alreadyAccount)
+        nextButton = view.findViewById(R.id.button_next_choose)
+        progressBar = view.findViewById(R.id.progressBar)
+
+        alreadyHave.setOnClickListener {
             parentFragmentManager.beginTransaction()
                 .replace(R.id.fragment_container, LoginFragment())
                 .commit()
         }
+
         auth = FirebaseAuth.getInstance()
         firestore = FirebaseFirestore.getInstance()
 
@@ -51,26 +53,31 @@ class SignUpFragment : Fragment() {
             val weight = view.findViewById<EditText>(R.id.input_weight).text.toString()
             val targetWeight = view.findViewById<EditText>(R.id.input_target_weight).text.toString()
 
+            nextButton.isEnabled = false
+            progressBar.visibility = View.VISIBLE
+
             registerUser(email, password, firstName, lastName, userName, birthDate, height, weight, targetWeight)
         }
 
         return view
     }
 
-    private fun registerUser(email: String, password: String, firstName: String, lastName: String, userName: String,
-                             birthDate: String, height: String, weight: String, targetWeight: String) {
-        // Perhitungan BMI
+    private fun registerUser(
+        email: String, password: String, firstName: String, lastName: String, userName: String,
+        birthDate: String, height: String, weight: String, targetWeight: String
+    ) {
         val heightValue = height.toDoubleOrNull() ?: 0.0
         val weightValue = weight.toDoubleOrNull() ?: 0.0
         val bmi = if (heightValue > 0 && weightValue > 0) {
-            val heightInMeters = heightValue / 100 // Konversi tinggi ke meter
+            val heightInMeters = heightValue / 100
             weightValue / (heightInMeters * heightInMeters)
-        } else {
-            null // Jika input tidak valid, BMI tidak dihitung
-        }
+        } else null
 
         auth.createUserWithEmailAndPassword(email, password)
             .addOnCompleteListener { task ->
+                nextButton.isEnabled = true
+                progressBar.visibility = View.GONE
+
                 if (task.isSuccessful) {
                     val user = auth.currentUser
                     val userData = hashMapOf(
@@ -99,7 +106,11 @@ class SignUpFragment : Fragment() {
                             }
                     }
                 } else {
-                    Toast.makeText(context, "Authentication failed: ${task.exception?.message}", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        context,
+                        "Authentication failed: ${task.exception?.message}",
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
             }
     }
@@ -113,8 +124,7 @@ class SignUpFragment : Fragment() {
         android.app.DatePickerDialog(
             requireContext(),
             { _, selectedYear, selectedMonth, selectedDay ->
-                val selectedDate =
-                    "$selectedDay/${selectedMonth + 1}/$selectedYear" // Adjust format as needed
+                val selectedDate = "$selectedDay/${selectedMonth + 1}/$selectedYear"
                 editText.setText(selectedDate)
             },
             year,
