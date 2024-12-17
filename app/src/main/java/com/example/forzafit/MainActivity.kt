@@ -14,6 +14,7 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var bottomNav: BottomNavigationView
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -24,6 +25,7 @@ class MainActivity : AppCompatActivity() {
         setSupportActionBar(binding.toolbar)
         HideNavtools()
         HideBottomNav()
+
         supportFragmentManager.beginTransaction()
             .replace(R.id.fragment_container, LazyLoadFragment())
             .commit()
@@ -34,6 +36,7 @@ class MainActivity : AppCompatActivity() {
                 .commit()
         }, 3000)
     }
+
     fun HideBottomNav() {
         bottomNav.visibility = View.GONE
     }
@@ -53,8 +56,12 @@ class MainActivity : AppCompatActivity() {
 
     fun ShowNavtools() {
         supportActionBar?.show()
-
         window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_VISIBLE
+    }
+
+    // Function to programmatically set active tab in Bottom Navigation
+    fun setActiveTab(itemId: Int) {
+        bottomNav.selectedItemId = itemId
     }
 
     private val navListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
@@ -67,7 +74,11 @@ class MainActivity : AppCompatActivity() {
             R.id.nav_user -> selectedFragment = ProfileFragment()
         }
 
-        supportFragmentManager.beginTransaction().replace(R.id.fragment_container, selectedFragment!!).commit()
+        if (selectedFragment != null) {
+            supportFragmentManager.beginTransaction()
+                .replace(R.id.fragment_container, selectedFragment)
+                .commit()
+        }
 
         true
     }

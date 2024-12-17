@@ -80,6 +80,7 @@ class LoginFragment : Fragment() {
                     parentFragmentManager.beginTransaction()
                         .replace(R.id.fragment_container, HomeFragment())
                         .commit()
+                    (activity as? MainActivity)?.setActiveTab(R.id.nav_home)
                 } else {
                     Toast.makeText(context, "Login failed: ${task.exception?.message}", Toast.LENGTH_SHORT).show()
                 }
