@@ -74,6 +74,7 @@ class PullUpFragment : Fragment() {
         val currentUser = auth.currentUser
         currentUser?.let { user ->
             val userId = user.uid
+            val currentTime = System.currentTimeMillis()
 
             db.collection("users").document(userId)
                 .get()
@@ -93,7 +94,6 @@ class PullUpFragment : Fragment() {
                             updatedLevel += 1
                         }
 
-                        // Current progress for "Today"
                         val currentPullUpsToday = document.getLong("pullUpsToday")?.toInt() ?: 0
                         val currentPullUpsThisWeek = document.getLong("pullUpsThisWeek")?.toInt() ?: 0
                         val currentPullUpsLast3Months = document.getLong("pullUpsLast3Months")?.toInt() ?: 0
@@ -102,27 +102,22 @@ class PullUpFragment : Fragment() {
                         val lastUpdatedWeek = document.getLong("lastUpdatedWeek") ?: 0L
                         val lastUpdated3Months = document.getLong("lastUpdated3Months") ?: 0L
 
-                        val currentTime = System.currentTimeMillis()
-
-                        // Update Today's progress
                         val updatedPullUpsToday = if (currentTime - lastUpdatedToday < 24 * 60 * 60 * 1000) {
                             currentPullUpsToday + reps
                         } else {
-                            reps // Reset progress if 24 hours have passed
+                            reps
                         }
 
-                        // Update This Week's progress
                         val updatedPullUpsThisWeek = if (currentTime - lastUpdatedWeek < 7 * 24 * 60 * 60 * 1000) {
                             currentPullUpsThisWeek + reps
                         } else {
-                            reps // Reset progress if the week has passed
+                            reps
                         }
 
-                        // Update Last 3 Months' progress
                         val updatedPullUpsLast3Months = if (currentTime - lastUpdated3Months < 3 * 30.44 * 24 * 60 * 60 * 1000) {
                             currentPullUpsLast3Months + reps
                         } else {
-                            reps // Reset progress if the 3 months have passed
+                            reps
                         }
 
                         // Update Firestore

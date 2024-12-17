@@ -64,6 +64,23 @@ class ProfileFragment : Fragment() {
                 if (document != null) {
                     val firstName = document.getString("firstName") ?: ""
                     val lastName = document.getString("lastName") ?: ""
+                    val imageUrl = document.getString("imageUrl")
+                    val coverImageUrl = document.getString("coverImageUrl")
+                    if (!imageUrl.isNullOrEmpty()) {
+                        Glide.with(this)
+                            .load(imageUrl)
+                            .placeholder(R.drawable.profile_placeholder)
+                            .error(R.drawable.profile_placeholder)
+                            .into(binding.imgProfile)
+                    }
+
+                    if (!coverImageUrl.isNullOrEmpty()) {
+                        Glide.with(this)
+                            .load(coverImageUrl)
+                            .placeholder(R.drawable.cover_placeholder)
+                            .error(R.drawable.cover_placeholder)
+                            .into(binding.imgCover)
+                    }
                     val joggingThisWeek = document.getLong("joggingThisWeek")?.toInt() ?: 0
                     val pushUpsThisWeek = document.getLong("pushUpsThisWeek")?.toInt() ?: 0
                     val pullUpsThisWeek = document.getLong("pullUpsThisWeek")?.toInt() ?: 0
@@ -71,9 +88,13 @@ class ProfileFragment : Fragment() {
                     val lastUpdated = document.getLong("lastUpdated") ?: 0L
                     val currentTime = System.currentTimeMillis()
                     val sevenDaysInMillis = 7 * 24 * 60 * 60 * 1000L
+                    Log.d("ProfileFragment", "pushUpsThisWeek: $pushUpsThisWeek")
+                    Log.d("ProfileFragment", "pullUpsThisWeek: $pullUpsThisWeek")
+                    Log.d("ProfileFragment", "sitUpsThisWeek: $sitUpsThisWeek")
 
                     // Reset weekly progress if 7 days have passed
-                    if (currentTime - lastUpdated > sevenDaysInMillis) {
+                    if (lastUpdated > 0 && currentTime - lastUpdated > sevenDaysInMillis) {
+                        // Reset progress only if lastUpdated is valid
                         firestore.collection("users").document(userId)
                             .update(
                                 mapOf(
@@ -87,8 +108,8 @@ class ProfileFragment : Fragment() {
                             .addOnSuccessListener {
                                 binding.txtJogging.text = "Jogging  0 km"
                                 binding.txtPushUp.text = "Push Up  x0"
-                                binding.txtPullUp.text = "Pull Up x0"
-                                binding.txtSitUp.text = "Sit Up x0"
+                                binding.txtPullUp.text = "Pull Up  x0"
+                                binding.txtSitUp.text = "Sit Up  x0"
                             }
                             .addOnFailureListener {
                                 Toast.makeText(context, "Failed to reset weekly progress", Toast.LENGTH_SHORT).show()
@@ -97,7 +118,7 @@ class ProfileFragment : Fragment() {
                         binding.txtJogging.text = "Jogging  $joggingThisWeek km"
                         binding.txtPushUp.text = "Push Up  x$pushUpsThisWeek"
                         binding.txtPullUp.text = "Pull Up  x$pullUpsThisWeek"
-                        binding.txtSitUp.text = "Sit Up  x$pullUpsThisWeek"
+                        binding.txtSitUp.text = "Sit Up  x$sitUpsThisWeek"
                     }
 
                     val birthDate = document.getString("birthDate") ?: ""

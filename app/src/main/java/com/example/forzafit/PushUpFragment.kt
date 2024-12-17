@@ -74,6 +74,7 @@ class PushUpFragment : Fragment() {
         val currentUser = auth.currentUser
         currentUser?.let { user ->
             val userId = user.uid
+            val currentTime = System.currentTimeMillis()
 
             db.collection("users").document(userId)
                 .get()
@@ -93,7 +94,6 @@ class PushUpFragment : Fragment() {
                             updatedLevel += 1
                         }
 
-                        // Current progress for "Today"
                         val currentPushUpsToday = document.getLong("pushUpsToday")?.toInt() ?: 0
                         val currentPushUpsThisWeek = document.getLong("pushUpsThisWeek")?.toInt() ?: 0
                         val currentPushUpsLast3Months = document.getLong("pushUpsLast3Months")?.toInt() ?: 0
@@ -102,27 +102,22 @@ class PushUpFragment : Fragment() {
                         val lastUpdatedWeek = document.getLong("lastUpdatedWeek") ?: 0L
                         val lastUpdated3Months = document.getLong("lastUpdated3Months") ?: 0L
 
-                        val currentTime = System.currentTimeMillis()
-
-                        // Update Today's progress
                         val updatedPushUpsToday = if (currentTime - lastUpdatedToday < 24 * 60 * 60 * 1000) {
                             currentPushUpsToday + reps
                         } else {
-                            reps // Reset progress if 24 hours have passed
+                            reps
                         }
 
-                        // Update This Week's progress
                         val updatedPushUpsThisWeek = if (currentTime - lastUpdatedWeek < 7 * 24 * 60 * 60 * 1000) {
                             currentPushUpsThisWeek + reps
                         } else {
-                            reps // Reset progress if the week has passed
+                            reps
                         }
 
-                        // Update Last 3 Months' progress
                         val updatedPushUpsLast3Months = if (currentTime - lastUpdated3Months < 3 * 30.44 * 24 * 60 * 60 * 1000) {
                             currentPushUpsLast3Months + reps
                         } else {
-                            reps // Reset progress if the 3 months have passed
+                            reps
                         }
 
                         // Update Firestore
@@ -143,7 +138,7 @@ class PushUpFragment : Fragment() {
                                 markTaskAsComplete()
                             }
                             .addOnFailureListener {
-                                Toast.makeText(context, "Failed to update XP", Toast.LENGTH_SHORT).show()
+                                Toast.makeText(context, "Failed to update XP and progress", Toast.LENGTH_SHORT).show()
                             }
                     }
                 }

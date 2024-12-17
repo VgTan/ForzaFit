@@ -74,6 +74,7 @@ class SitUpFragment : Fragment() {
         val currentUser = auth.currentUser
         currentUser?.let { user ->
             val userId = user.uid
+            val currentTime = System.currentTimeMillis()
 
             db.collection("users").document(userId)
                 .get()
@@ -93,7 +94,6 @@ class SitUpFragment : Fragment() {
                             updatedLevel += 1
                         }
 
-                        // Current progress for "Today"
                         val currentSitUpsToday = document.getLong("sitUpsToday")?.toInt() ?: 0
                         val currentSitUpsThisWeek = document.getLong("sitUpsThisWeek")?.toInt() ?: 0
                         val currentSitUpsLast3Months = document.getLong("sitUpsLast3Months")?.toInt() ?: 0
@@ -102,27 +102,22 @@ class SitUpFragment : Fragment() {
                         val lastUpdatedWeek = document.getLong("lastUpdatedWeek") ?: 0L
                         val lastUpdated3Months = document.getLong("lastUpdated3Months") ?: 0L
 
-                        val currentTime = System.currentTimeMillis()
-
-                        // Update Today's progress
                         val updatedSitUpsToday = if (currentTime - lastUpdatedToday < 24 * 60 * 60 * 1000) {
                             currentSitUpsToday + reps
                         } else {
-                            reps // Reset progress if 24 hours have passed
+                            reps
                         }
 
-                        // Update This Week's progress
                         val updatedSitUpsThisWeek = if (currentTime - lastUpdatedWeek < 7 * 24 * 60 * 60 * 1000) {
                             currentSitUpsThisWeek + reps
                         } else {
-                            reps // Reset progress if the week has passed
+                            reps
                         }
 
-                        // Update Last 3 Months' progress
                         val updatedSitUpsLast3Months = if (currentTime - lastUpdated3Months < 3 * 30.44 * 24 * 60 * 60 * 1000) {
                             currentSitUpsLast3Months + reps
                         } else {
-                            reps // Reset progress if the 3 months have passed
+                            reps
                         }
 
                         // Update Firestore
