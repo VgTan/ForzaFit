@@ -13,7 +13,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import java.text.SimpleDateFormat
 import java.util.*
 
-class PushUpFragment : Fragment() {
+class PullUpFragment : Fragment() {
 
     private lateinit var repetitionTextView: TextView
     private lateinit var finishButton: Button
@@ -27,10 +27,10 @@ class PushUpFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = inflater.inflate(R.layout.fragment_push_up, container, false)
+        val view = inflater.inflate(R.layout.fragment_pull_up, container, false)
 
         repetitionTextView = view.findViewById(R.id.repetitionTextView)
-        finishButton = view.findViewById(R.id.btnFinishPushUp)
+        finishButton = view.findViewById(R.id.btnFinishPullUp)
 
         taskId = arguments?.getString("taskId")
         loadTaskDetails()
@@ -94,28 +94,28 @@ class PushUpFragment : Fragment() {
                             updatedLevel += 1
                         }
 
-                        val currentPushUpsToday = document.getLong("pushUpsToday")?.toInt() ?: 0
-                        val currentPushUpsThisWeek = document.getLong("pushUpsThisWeek")?.toInt() ?: 0
-                        val currentPushUpsLast3Months = document.getLong("pushUpsLast3Months")?.toInt() ?: 0
+                        val currentPullUpsToday = document.getLong("pullUpsToday")?.toInt() ?: 0
+                        val currentPullUpsThisWeek = document.getLong("pullUpsThisWeek")?.toInt() ?: 0
+                        val currentPullUpsLast3Months = document.getLong("pullUpsLast3Months")?.toInt() ?: 0
 
                         val lastUpdatedToday = document.getLong("lastUpdatedToday") ?: 0L
                         val lastUpdatedWeek = document.getLong("lastUpdatedWeek") ?: 0L
                         val lastUpdated3Months = document.getLong("lastUpdated3Months") ?: 0L
 
-                        val updatedPushUpsToday = if (currentTime - lastUpdatedToday < 24 * 60 * 60 * 1000) {
-                            currentPushUpsToday + reps
+                        val updatedPullUpsToday = if (currentTime - lastUpdatedToday < 24 * 60 * 60 * 1000) {
+                            currentPullUpsToday + reps
                         } else {
                             reps
                         }
 
-                        val updatedPushUpsThisWeek = if (currentTime - lastUpdatedWeek < 7 * 24 * 60 * 60 * 1000) {
-                            currentPushUpsThisWeek + reps
+                        val updatedPullUpsThisWeek = if (currentTime - lastUpdatedWeek < 7 * 24 * 60 * 60 * 1000) {
+                            currentPullUpsThisWeek + reps
                         } else {
                             reps
                         }
 
-                        val updatedPushUpsLast3Months = if (currentTime - lastUpdated3Months < 3 * 30.44 * 24 * 60 * 60 * 1000) {
-                            currentPushUpsLast3Months + reps
+                        val updatedPullUpsLast3Months = if (currentTime - lastUpdated3Months < 3 * 30.44 * 24 * 60 * 60 * 1000) {
+                            currentPullUpsLast3Months + reps
                         } else {
                             reps
                         }
@@ -126,9 +126,9 @@ class PushUpFragment : Fragment() {
                                 mapOf(
                                     "xp" to updatedXP,
                                     "level" to updatedLevel,
-                                    "pushUpsToday" to updatedPushUpsToday,
-                                    "pushUpsThisWeek" to updatedPushUpsThisWeek,
-                                    "pushUpsLast3Months" to updatedPushUpsLast3Months,
+                                    "pullUpsToday" to updatedPullUpsToday,
+                                    "pullUpsThisWeek" to updatedPullUpsThisWeek,
+                                    "pullUpsLast3Months" to updatedPullUpsLast3Months,
                                     "lastUpdatedToday" to currentTime,
                                     "lastUpdatedWeek" to currentTime,
                                     "lastUpdated3Months" to currentTime
@@ -138,7 +138,7 @@ class PushUpFragment : Fragment() {
                                 markTaskAsComplete()
                             }
                             .addOnFailureListener {
-                                Toast.makeText(context, "Failed to update XP and progress", Toast.LENGTH_SHORT).show()
+                                Toast.makeText(context, "Failed to update XP", Toast.LENGTH_SHORT).show()
                             }
                     }
                 }

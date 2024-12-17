@@ -35,7 +35,7 @@ class AddTaskFragment : Fragment() {
         submitButton = view.findViewById(R.id.btnNext)
 
         // Set up exercise type dropdown
-        val exerciseTypes = arrayOf("Jogging", "Push Up")
+        val exerciseTypes = arrayOf("Jogging", "Push Up", "Pull Up", "Sit Up")
         val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, exerciseTypes)
         adapter.setDropDownViewResource(R.layout.custom_spinner_dropdown_item) // Use your custom layout here
         exerciseTypeSpinner.adapter = adapter
@@ -47,6 +47,8 @@ class AddTaskFragment : Fragment() {
                 when (position) {
                     0 -> inputField.hint = "Enter kilometers"
                     1 -> inputField.hint = "Enter repetitions"
+                    2 -> inputField.hint = "Enter repetitions"
+                    3 -> inputField.hint = "Enter repetitions"
                 }
             }
 

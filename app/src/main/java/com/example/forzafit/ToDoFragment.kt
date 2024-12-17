@@ -39,6 +39,8 @@ class ToDoFragment : Fragment() {
             when {
                 task.name.contains("Push Up") -> navigateToFragment(PushUpFragment(), task.taskId)
                 task.name.contains("Jogging") -> navigateToFragment(JoggingFragment(), task.taskId)
+                task.name.contains("Pull Up") -> navigateToFragment(PullUpFragment(), task.taskId)
+                task.name.contains("Sit Up") -> navigateToFragment(SitUpFragment(), task.taskId)
                 else -> Toast.makeText(context, "Unknown task type", Toast.LENGTH_SHORT).show()
             }
         }

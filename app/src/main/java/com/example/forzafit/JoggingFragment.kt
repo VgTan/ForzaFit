@@ -188,10 +188,11 @@ class JoggingFragment : Fragment(), OnMapReadyCallback {
         }
     }
 
-    private fun updateXPAndCompleteTask(dist: Int) {
+    private fun updateXPAndCompleteTask(reps: Int) {
         val currentUser = auth.currentUser
         currentUser?.let { user ->
             val userId = user.uid
+            val currentTime = System.currentTimeMillis()
 
             db.collection("users").document(userId)
                 .get()
@@ -199,7 +200,7 @@ class JoggingFragment : Fragment(), OnMapReadyCallback {
                     if (document.exists()) {
                         val currentXP = document.getLong("xp")?.toInt() ?: 0
                         val currentLevel = document.getLong("level")?.toInt() ?: 1
-                        val newXP = currentXP + dist
+                        val newXP = currentXP + reps
 
                         var updatedXP = newXP
                         var updatedLevel = currentLevel
@@ -217,30 +218,27 @@ class JoggingFragment : Fragment(), OnMapReadyCallback {
                         val lastUpdatedWeek = document.getLong("lastUpdatedWeek") ?: 0L
                         val lastUpdated3Months = document.getLong("lastUpdated3Months") ?: 0L
 
-                        val currentTime = System.currentTimeMillis()
-
                         // Update today's progress
                         val updatedJoggingToday = if (currentTime - lastUpdatedToday < 24 * 60 * 60 * 1000) {
-                            currentJoggingToday + dist
+                            currentJoggingToday + reps
                         } else {
-                            dist // Reset today's progress
+                            reps
                         }
 
                         // Update this week's progress
                         val updatedJoggingThisWeek = if (currentTime - lastUpdatedWeek < 7 * 24 * 60 * 60 * 1000) {
-                            currentJoggingThisWeek + dist
+                            currentJoggingThisWeek + reps
                         } else {
-                            dist // Reset this week's progress
+                            reps
                         }
 
                         // Update last 3 months' progress
                         val updatedJoggingLast3Months = if (currentTime - lastUpdated3Months < 3 * 30.44 * 24 * 60 * 60 * 1000) {
-                            currentJoggingLast3Months + dist
+                            currentJoggingLast3Months + reps
                         } else {
-                            dist // Reset last 3 months' progress
+                            reps // Reset last 3 months' progress
                         }
 
-                        // Update Firestore
                         db.collection("users").document(userId)
                             .update(
                                 mapOf(
