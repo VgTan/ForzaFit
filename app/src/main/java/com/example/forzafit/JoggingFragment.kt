@@ -10,6 +10,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
@@ -36,6 +37,7 @@ class JoggingFragment : Fragment(), OnMapReadyCallback {
     private lateinit var mapView: MapView
     private lateinit var distanceTextView: TextView
     private lateinit var finishButton: Button
+    private lateinit var progressBar: ProgressBar
     private var taskId: String? = null
     private var distance: Float = 0f
 
@@ -55,6 +57,7 @@ class JoggingFragment : Fragment(), OnMapReadyCallback {
         mapView = view.findViewById(R.id.joggingMapView)
         distanceTextView = view.findViewById(R.id.distanceTextView)
         finishButton = view.findViewById(R.id.btnFinishJogging)
+        progressBar = view.findViewById(R.id.progressBar)
 
         mapView.onCreate(savedInstanceState)
         mapView.getMapAsync(this)
@@ -64,6 +67,8 @@ class JoggingFragment : Fragment(), OnMapReadyCallback {
 
         finishButton.setOnClickListener {
             if (distance > 0) {
+                progressBar.visibility = View.VISIBLE
+                finishButton.isEnabled = false
                 updateXPAndCompleteTask(distance.toInt())
             } else {
                 Toast.makeText(context, "No distance found to complete", Toast.LENGTH_SHORT).show()
@@ -170,10 +175,12 @@ class JoggingFragment : Fragment(), OnMapReadyCallback {
             val userId = user.uid
 
             taskId?.let { id ->
+                progressBar.visibility = View.VISIBLE
                 db.collection("users").document(userId)
                     .collection("to_do_list").document(id)
                     .get()
                     .addOnSuccessListener { document ->
+                        progressBar.visibility = View.GONE
                         if (document.exists()) {
                             distance = document.getString("value")?.toFloatOrNull() ?: 0f
                             distanceTextView.text = "Distance: %.2f km".format(distance)
@@ -182,6 +189,7 @@ class JoggingFragment : Fragment(), OnMapReadyCallback {
                         }
                     }
                     .addOnFailureListener {
+                        progressBar.visibility = View.GONE
                         Toast.makeText(context, "Failed to load task", Toast.LENGTH_SHORT).show()
                     }
             }
@@ -256,11 +264,15 @@ class JoggingFragment : Fragment(), OnMapReadyCallback {
                                 markTaskAsComplete()
                             }
                             .addOnFailureListener {
-                                Toast.makeText(context, "Failed to update XP", Toast.LENGTH_SHORT).show()
+                                progressBar.visibility = View.GONE
+                                finishButton.isEnabled = true
+                                Toast.makeText(context, "Failed to update XP and progress", Toast.LENGTH_SHORT).show()
                             }
                     }
                 }
                 .addOnFailureListener {
+                    progressBar.visibility = View.GONE
+                    finishButton.isEnabled = true
                     Toast.makeText(context, "Failed to retrieve user data", Toast.LENGTH_SHORT).show()
                 }
         }
@@ -278,10 +290,14 @@ class JoggingFragment : Fragment(), OnMapReadyCallback {
                     .collection("to_do_list").document(id)
                     .update(mapOf("status" to "complete", "finished_time" to currentTime))
                     .addOnSuccessListener {
+                        progressBar.visibility = View.GONE
+                        finishButton.isEnabled = true
                         Toast.makeText(context, "Task marked as complete", Toast.LENGTH_SHORT).show()
                         navigateToProfileFragment()
                     }
                     .addOnFailureListener {
+                        progressBar.visibility = View.GONE
+                        finishButton.isEnabled = true
                         Toast.makeText(context, "Failed to update task", Toast.LENGTH_SHORT).show()
                     }
             }

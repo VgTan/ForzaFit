@@ -4,9 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import androidx.fragment.app.Fragment
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -17,6 +15,7 @@ class PushUpFragment : Fragment() {
 
     private lateinit var repetitionTextView: TextView
     private lateinit var finishButton: Button
+    private lateinit var progressBar: ProgressBar
     private var taskId: String? = null
     private var repetitions: Int = 0
 
@@ -31,12 +30,15 @@ class PushUpFragment : Fragment() {
 
         repetitionTextView = view.findViewById(R.id.repetitionTextView)
         finishButton = view.findViewById(R.id.btnFinishPushUp)
+        progressBar = view.findViewById(R.id.progressBar)
 
         taskId = arguments?.getString("taskId")
         loadTaskDetails()
 
         finishButton.setOnClickListener {
             if (repetitions > 0) {
+                progressBar.visibility = View.VISIBLE
+                finishButton.isEnabled = false
                 updateXPAndCompleteTask(repetitions)
             } else {
                 Toast.makeText(context, "No repetitions found to complete", Toast.LENGTH_SHORT).show()
@@ -52,10 +54,12 @@ class PushUpFragment : Fragment() {
             val userId = user.uid
 
             taskId?.let { id ->
+                progressBar.visibility = View.VISIBLE
                 db.collection("users").document(userId)
                     .collection("to_do_list").document(id)
                     .get()
                     .addOnSuccessListener { document ->
+                        progressBar.visibility = View.GONE
                         if (document.exists()) {
                             repetitions = document.getString("value")?.toIntOrNull() ?: 0
                             repetitionTextView.text = "Repetitions: $repetitions times"
@@ -64,6 +68,7 @@ class PushUpFragment : Fragment() {
                         }
                     }
                     .addOnFailureListener {
+                        progressBar.visibility = View.GONE
                         Toast.makeText(context, "Failed to load task", Toast.LENGTH_SHORT).show()
                     }
             }
@@ -138,11 +143,15 @@ class PushUpFragment : Fragment() {
                                 markTaskAsComplete()
                             }
                             .addOnFailureListener {
+                                progressBar.visibility = View.GONE
+                                finishButton.isEnabled = true
                                 Toast.makeText(context, "Failed to update XP and progress", Toast.LENGTH_SHORT).show()
                             }
                     }
                 }
                 .addOnFailureListener {
+                    progressBar.visibility = View.GONE
+                    finishButton.isEnabled = true
                     Toast.makeText(context, "Failed to retrieve user data", Toast.LENGTH_SHORT).show()
                 }
         }
@@ -160,10 +169,14 @@ class PushUpFragment : Fragment() {
                     .collection("to_do_list").document(id)
                     .update(mapOf("status" to "complete", "finished_time" to currentTime))
                     .addOnSuccessListener {
+                        progressBar.visibility = View.GONE
+                        finishButton.isEnabled = true
                         Toast.makeText(context, "Task marked as complete", Toast.LENGTH_SHORT).show()
                         navigateToProfileFragment()
                     }
                     .addOnFailureListener {
+                        progressBar.visibility = View.GONE
+                        finishButton.isEnabled = true
                         Toast.makeText(context, "Failed to update task", Toast.LENGTH_SHORT).show()
                     }
             }

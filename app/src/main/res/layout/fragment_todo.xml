@@ -7,6 +7,15 @@
     android:background="@drawable/todopagebackground"
     android:padding="16dp">
 
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="16dp"
+        android:visibility="gone"
+        style="?android:attr/progressBarStyleLarge" />
+
     <!-- Title -->
     <TextView
         android:id="@+id/tvToDoTitle"

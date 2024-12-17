@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -16,11 +17,12 @@ class ToDoFragment : Fragment() {
 
     private lateinit var taskRecyclerView: RecyclerView
     private lateinit var backButton: Button
+    private lateinit var progressBar: ProgressBar // Added ProgressBar
 
     private val auth: FirebaseAuth by lazy { FirebaseAuth.getInstance() }
     private val db: FirebaseFirestore by lazy { FirebaseFirestore.getInstance() }
 
-    private val taskList = mutableListOf<TaskAdapter.Task>() // List to store tasks
+    private val taskList = mutableListOf<TaskAdapter.Task>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -31,11 +33,11 @@ class ToDoFragment : Fragment() {
         // Initialize views
         taskRecyclerView = view.findViewById(R.id.taskRecyclerView)
         backButton = view.findViewById(R.id.btnBack)
+        progressBar = view.findViewById(R.id.progressBar) // Initialize ProgressBar
 
         // Setup RecyclerView
         taskRecyclerView.layoutManager = LinearLayoutManager(requireContext())
         taskRecyclerView.adapter = TaskAdapter(taskList) { task ->
-            // Navigate to respective fragment based on task type
             when {
                 task.name.contains("Push Up") -> navigateToFragment(PushUpFragment(), task.taskId)
                 task.name.contains("Jogging") -> navigateToFragment(JoggingFragment(), task.taskId)
@@ -45,28 +47,28 @@ class ToDoFragment : Fragment() {
             }
         }
 
-        // Fetch tasks from Firestore
+        // Fetch tasks and display progress bar
         fetchIncompleteTasks()
 
-        // Handle back button click
         backButton.setOnClickListener {
+            backButton.isEnabled = false
             navigateToHomeFragment()
         }
 
         return view
     }
 
-    /**
-     * Fetches incomplete tasks from Firestore and populates the RecyclerView.
-     */
     private fun fetchIncompleteTasks() {
+        progressBar.visibility = View.VISIBLE
+        backButton.isEnabled = false // Disable back button during task fetch
+
         val currentUser = auth.currentUser
         currentUser?.let { user ->
             val userId = user.uid
 
             db.collection("users").document(userId)
                 .collection("to_do_list")
-                .whereEqualTo("status", "incomplete") // Filter for incomplete tasks
+                .whereEqualTo("status", "incomplete")
                 .get()
                 .addOnSuccessListener { documents ->
                     taskList.clear()
@@ -76,22 +78,21 @@ class ToDoFragment : Fragment() {
                         val taskValue = document.getString("value") ?: "0"
                         val taskId = document.id
 
-                        // Add task to list
                         taskList.add(TaskAdapter.Task(taskId, taskType, "$taskValue units"))
                     }
 
-                    // Notify adapter about data changes
                     taskRecyclerView.adapter?.notifyDataSetChanged()
                 }
                 .addOnFailureListener {
                     Toast.makeText(context, "Failed to load tasks", Toast.LENGTH_SHORT).show()
                 }
+                .addOnCompleteListener {
+                    progressBar.visibility = View.GONE
+                    backButton.isEnabled = true // Re-enable button
+                }
         }
     }
 
-    /**
-     * Navigates to the appropriate fragment and passes the task ID.
-     */
     private fun navigateToFragment(fragment: Fragment, taskId: String) {
         val bundle = Bundle()
         bundle.putString("taskId", taskId)
@@ -103,9 +104,6 @@ class ToDoFragment : Fragment() {
             .commit()
     }
 
-    /**
-     * Navigates to HomeFragment.
-     */
     private fun navigateToHomeFragment() {
         parentFragmentManager.beginTransaction()
             .replace(R.id.fragment_container, HomeFragment())

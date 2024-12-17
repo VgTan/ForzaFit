@@ -1,52 +1,67 @@
-<LinearLayout
+<FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:gravity="center_horizontal"
-    android:background="@drawable/todopagebackground"
-    android:padding="16dp">
+    android:layout_height="match_parent">
 
-    <!-- Title -->
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="96dp"
-        android:layout_marginBottom="16dp"
-        android:gravity="center"
-        android:text="Push Up"
-        android:textColor="@color/main"
-        android:textSize="30sp"
-        android:textStyle="bold" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center_horizontal"
+        android:background="@drawable/todopagebackground"
+        android:padding="16dp">
 
-    <!-- Image -->
-    <ImageView
-        android:id="@+id/imageView9"
-        android:layout_width="200dp"
-        android:layout_height="200dp"
-        android:layout_marginTop="32dp"
-        android:layout_marginBottom="16dp"
-        android:contentDescription="Push Up Bear"
-        android:src="@drawable/pushupbear" />
+        <!-- Title -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="96dp"
+            android:layout_marginBottom="16dp"
+            android:gravity="center"
+            android:text="Push Up"
+            android:textColor="@color/main"
+            android:textSize="30sp"
+            android:textStyle="bold" />
 
-    <!-- Repetition Label -->
-    <TextView
-        android:id="@+id/repetitionTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Repetitions: 0 times"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        android:textColor="@color/white"
-        android:layout_marginBottom="24dp"/>
+        <!-- Image -->
+        <ImageView
+            android:id="@+id/imageView9"
+            android:layout_width="200dp"
+            android:layout_height="200dp"
+            android:layout_marginTop="32dp"
+            android:layout_marginBottom="16dp"
+            android:contentDescription="Push Up Bear"
+            android:src="@drawable/pushupbear" />
 
-    <!-- Finish Button -->
-    <Button
-        android:id="@+id/btnFinishPushUp"
-        android:layout_width="220dp"
-        android:layout_height="50dp"
-        android:text="Finish"
-        android:textColor="@color/white"
-        android:backgroundTint="@color/main"
-        android:textStyle="bold"/>
-</LinearLayout>
+        <!-- Repetition Label -->
+        <TextView
+            android:id="@+id/repetitionTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Repetitions: 0 times"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:textColor="@color/white"
+            android:layout_marginBottom="24dp"/>
+
+        <!-- Finish Button -->
+        <Button
+            android:id="@+id/btnFinishPushUp"
+            android:layout_width="220dp"
+            android:layout_height="50dp"
+            android:text="Finish"
+            android:textColor="@color/white"
+            android:backgroundTint="@color/main"
+            android:textStyle="bold"/>
+    </LinearLayout>
+
+    <!-- ProgressBar Overlay -->
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_gravity="center"
+        android:visibility="gone"
+        style="?android:attr/progressBarStyleLarge" />
+
+</FrameLayout>
