@@ -55,6 +55,7 @@ class HomeFragment : Fragment() {
 
         // Fetch user data from Firestore
         fetchUserData()
+        showConfetti()
 
         val buttonClickAnimation = AnimationUtils.loadAnimation(requireContext(), R.anim.button_click)
         val bounceAnimation = AnimationUtils.loadAnimation(requireContext(), R.anim.bounce)
