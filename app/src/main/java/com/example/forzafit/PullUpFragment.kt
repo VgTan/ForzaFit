@@ -110,38 +110,27 @@ class PullUpFragment : Fragment() {
                         val lastUpdatedWeek = document.getLong("lastUpdatedWeek") ?: 0L
                         val lastUpdated3Months = document.getLong("lastUpdated3Months") ?: 0L
 
-                        val updatedPullUpsToday = if (currentTime - lastUpdatedToday < 24 * 60 * 60 * 1000) {
-                            currentPullUpsToday + reps
-                        } else {
-                            reps
-                        }
+                        val resetToday = currentTime - lastUpdatedToday > 24 * 60 * 60 * 1000
+                        val resetWeek = currentTime - lastUpdatedWeek > 7 * 24 * 60 * 60 * 1000
+                        val reset3Months = currentTime - lastUpdated3Months > (3 * 30.44 * 24 * 60 * 60 * 1000).toLong()
 
-                        val updatedPullUpsThisWeek = if (currentTime - lastUpdatedWeek < 7 * 24 * 60 * 60 * 1000) {
-                            currentPullUpsThisWeek + reps
-                        } else {
-                            reps
-                        }
+                        val updatedPullUpsToday = if (resetToday) reps else currentPullUpsToday + reps
+                        val updatedPullUpsThisWeek = if (resetWeek) reps else currentPullUpsThisWeek + reps
+                        val updatedPullUpsLast3Months = if (reset3Months) reps else currentPullUpsLast3Months + reps
 
-                        val updatedPullUpsLast3Months = if (currentTime - lastUpdated3Months < 3 * 30.44 * 24 * 60 * 60 * 1000) {
-                            currentPullUpsLast3Months + reps
-                        } else {
-                            reps
-                        }
+                        val updates = mutableMapOf<String, Any>(
+                            "xp" to updatedXP,
+                            "level" to updatedLevel,
+                            "pullUpsToday" to updatedPullUpsToday,
+                            "pullUpsThisWeek" to updatedPullUpsThisWeek,
+                            "pullUpsLast3Months" to updatedPullUpsLast3Months,
+                            "lastUpdatedToday" to if (resetToday) currentTime else lastUpdatedToday,
+                            "lastUpdatedWeek" to if (resetWeek) currentTime else lastUpdatedWeek,
+                            "lastUpdated3Months" to if (reset3Months) currentTime else lastUpdated3Months
+                        )
 
-                        // Update Firestore
                         db.collection("users").document(userId)
-                            .update(
-                                mapOf(
-                                    "xp" to updatedXP,
-                                    "level" to updatedLevel,
-                                    "pullUpsToday" to updatedPullUpsToday,
-                                    "pullUpsThisWeek" to updatedPullUpsThisWeek,
-                                    "pullUpsLast3Months" to updatedPullUpsLast3Months,
-                                    "lastUpdatedToday" to currentTime,
-                                    "lastUpdatedWeek" to currentTime,
-                                    "lastUpdated3Months" to currentTime
-                                )
-                            )
+                            .update(updates)
                             .addOnSuccessListener {
                                 markTaskAsComplete()
                             }

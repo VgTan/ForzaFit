@@ -226,40 +226,27 @@ class JoggingFragment : Fragment(), OnMapReadyCallback {
                         val lastUpdatedWeek = document.getLong("lastUpdatedWeek") ?: 0L
                         val lastUpdated3Months = document.getLong("lastUpdated3Months") ?: 0L
 
-                        // Update today's progress
-                        val updatedJoggingToday = if (currentTime - lastUpdatedToday < 24 * 60 * 60 * 1000) {
-                            currentJoggingToday + reps
-                        } else {
-                            reps
-                        }
+                        val resetToday = currentTime - lastUpdatedToday > 24 * 60 * 60 * 1000
+                        val resetWeek = currentTime - lastUpdatedWeek > 7 * 24 * 60 * 60 * 1000
+                        val reset3Months = currentTime - lastUpdated3Months > (3 * 30.44 * 24 * 60 * 60 * 1000).toLong()
 
-                        // Update this week's progress
-                        val updatedJoggingThisWeek = if (currentTime - lastUpdatedWeek < 7 * 24 * 60 * 60 * 1000) {
-                            currentJoggingThisWeek + reps
-                        } else {
-                            reps
-                        }
+                        val updatedJoggingToday = if (resetToday) reps else currentJoggingToday + reps
+                        val updatedJoggingThisWeek = if (resetWeek) reps else currentJoggingThisWeek + reps
+                        val updatedJoggingLast3Months = if (reset3Months) reps else currentJoggingLast3Months + reps
 
-                        // Update last 3 months' progress
-                        val updatedJoggingLast3Months = if (currentTime - lastUpdated3Months < 3 * 30.44 * 24 * 60 * 60 * 1000) {
-                            currentJoggingLast3Months + reps
-                        } else {
-                            reps // Reset last 3 months' progress
-                        }
+                        val updates = mutableMapOf<String, Any>(
+                            "xp" to updatedXP,
+                            "level" to updatedLevel,
+                            "joggingToday" to updatedJoggingToday,
+                            "joggingThisWeek" to updatedJoggingThisWeek,
+                            "joggingLast3Months" to updatedJoggingLast3Months,
+                            "lastUpdatedToday" to if (resetToday) currentTime else lastUpdatedToday,
+                            "lastUpdatedWeek" to if (resetWeek) currentTime else lastUpdatedWeek,
+                            "lastUpdated3Months" to if (reset3Months) currentTime else lastUpdated3Months
+                        )
 
                         db.collection("users").document(userId)
-                            .update(
-                                mapOf(
-                                    "xp" to updatedXP,
-                                    "level" to updatedLevel,
-                                    "joggingToday" to updatedJoggingToday,
-                                    "joggingThisWeek" to updatedJoggingThisWeek,
-                                    "joggingLast3Months" to updatedJoggingLast3Months,
-                                    "lastUpdatedToday" to currentTime,
-                                    "lastUpdatedWeek" to currentTime,
-                                    "lastUpdated3Months" to currentTime
-                                )
-                            )
+                            .update(updates)
                             .addOnSuccessListener {
                                 markTaskAsComplete()
                             }
