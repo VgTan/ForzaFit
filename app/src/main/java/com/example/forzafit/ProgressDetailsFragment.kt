@@ -4,11 +4,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.example.forzafit.databinding.FragmentProgressDetailsBinding
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-import java.util.*
 
 class ProgressDetailsFragment : Fragment() {
 
@@ -35,54 +35,28 @@ class ProgressDetailsFragment : Fragment() {
             requireActivity().onBackPressed()
         }
 
-        // Fetch and update progress data
-        fetchAndResetProgress("Today", 24 * 60 * 60 * 1000L) // 1 day
-        fetchAndResetProgress("ThisWeek", 7 * 24 * 60 * 60 * 1000L) // 1 week
-        fetchAndResetProgress("Last3Months", (3 * 30.44 * 24 * 60 * 60 * 1000L).toLong()) // ~3 months
-//        fetchAndResetProgress("Today", 10 * 1000L)       // 10 seconds instead of 1 day
-//        fetchAndResetProgress("ThisWeek", 30 * 1000L)    // 30 seconds instead of 1 week
-//        fetchAndResetProgress("Last3Months", 60 * 1000L) // 60 seconds instead of 3 months
-
+        // Fetch progress data from Firestore to display
+        fetchProgressData("Today")
+        fetchProgressData("ThisWeek")
+        fetchProgressData("Last3Months")
     }
 
-    private fun fetchAndResetProgress(period: String, resetInterval: Long) {
+    private fun fetchProgressData(period: String) {
         val userId = auth.currentUser?.uid ?: return
-        val currentTime = System.currentTimeMillis()
 
         firestore.collection("users").document(userId)
             .get()
             .addOnSuccessListener { document ->
                 if (document != null) {
-                    // Fetch the last updated time
-                    val lastUpdatedKey = "lastUpdated$period"
-                    val lastUpdated = document.getLong(lastUpdatedKey) ?: 0L
+                    // Fetch progress values
+                    val pushUps = document.getLong("pushUps$period")?.toInt() ?: 0
+                    val sitUps = document.getLong("sitUps$period")?.toInt() ?: 0
+                    val pullUps = document.getLong("pullUps$period")?.toInt() ?: 0
+                    val jogging = document.getLong("jogging$period")?.toInt() ?: 0
 
-                    // Check if reset interval has passed
-                    val shouldReset = currentTime - lastUpdated > resetInterval
-
-                    // Fetch progress counts
-                    val pushUps = if (shouldReset) 0 else document.getLong("pushUps$period")?.toInt() ?: 0
-                    val sitUps = if (shouldReset) 0 else document.getLong("sitUps$period")?.toInt() ?: 0
-                    val pullUps = if (shouldReset) 0 else document.getLong("pullUps$period")?.toInt() ?: 0
-                    val jogging = if (shouldReset) 0 else document.getLong("jogging$period")?.toInt() ?: 0 // In km
-
-                    // Calculate calories
                     val calories = calculateCalories(pushUps, sitUps, pullUps, jogging)
 
-                    if (shouldReset) {
-                        firestore.collection("users").document(userId)
-                            .update(
-                                mapOf(
-                                    "pushUps$period" to 0,
-                                    "sitUps$period" to 0,
-                                    "pullUps$period" to 0,
-                                    "jogging$period" to 0,
-                                    "lastUpdated$period" to currentTime
-                                )
-                            )
-                    }
-
-                    // Update UI
+                    // Update UI based on the period
                     when (period) {
                         "Today" -> {
                             binding.txtCaloriesCountToday.text = "%.2f kkal".format(calories)
@@ -109,18 +83,16 @@ class ProgressDetailsFragment : Fragment() {
                 }
             }
             .addOnFailureListener {
-                // Handle failure (e.g., show a toast)
+                Toast.makeText(context, "Failed to load progress data", Toast.LENGTH_SHORT).show()
             }
     }
 
     private fun calculateCalories(pushUps: Int, sitUps: Int, pullUps: Int, jogging: Int): Double {
-        // Define calorie burn rates
         val pushUpRate = 0.3 // kcal per repetition
         val sitUpRate = 0.4 // kcal per repetition
         val pullUpRate = 1.0 // kcal per repetition
-        val joggingRate = 100.0 // kcal per kilometer
+        val joggingRate = 70.0 // kcal per kilometer
 
-        // Calculate total calories
         return (pushUps * pushUpRate) +
                 (sitUps * sitUpRate) +
                 (pullUps * pullUpRate) +

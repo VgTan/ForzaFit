@@ -259,11 +259,11 @@ class ProfileFragment : Fragment() {
         for (i in 1..4) {
             val weekKey = "week$i"
             val weight = weeklyWeightsMap[weekKey] as? Double ?: 0.0
-            if (weight <= 0.0) { // If the weight for this week is not filled
+            if (weight <= 0.0) {
                 return weekKey
             }
         }
-        return null // All weeks are filled
+        return null
     }
 
 
@@ -321,12 +321,11 @@ class ProfileFragment : Fragment() {
                         val newBMI = calculateBMI(height, newWeight)
                         val updates = mapOf(
                             "BMI" to "%.2f".format(newBMI),
-                            "weight" to newWeight // Update the weight in Firestore as well
+                            "weight" to newWeight
                         )
                         firestore.collection("users").document(userId)
                             .update(updates)
                             .addOnSuccessListener {
-                                // Safely update UI only if fragment is attached
                                 if (isAdded && _binding != null) {
                                     binding.txtBMI.text = "BMI: %.2f".format(newBMI)
                                     Log.d("ProfileFragment", "BMI and weight updated: BMI = $newBMI, Weight = $newWeight")

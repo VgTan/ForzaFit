@@ -37,6 +37,7 @@ class LoginFragment : Fragment() {
         loginButton = view.findViewById(R.id.button_login)
         nextButton = view.findViewById(R.id.createButton)
         progressBar = view.findViewById(R.id.progressBar)
+        val forgotPasswordButton = view.findViewById<Button>(R.id.forgotButton)
 
         progressBar.visibility = View.GONE // Initially hide the progress bar
 
@@ -54,6 +55,14 @@ class LoginFragment : Fragment() {
         nextButton.setOnClickListener {
             parentFragmentManager.beginTransaction()
                 .replace(R.id.fragment_container, SignUpFragment())
+                .addToBackStack(null)
+                .commit()
+        }
+
+
+        forgotPasswordButton.setOnClickListener {
+            parentFragmentManager.beginTransaction()
+                .replace(R.id.fragment_container, ForgotPasswordFragment())
                 .addToBackStack(null)
                 .commit()
         }

@@ -8,7 +8,14 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import com.example.forzafit.databinding.ActivityMainBinding
 import androidx.fragment.app.Fragment
+import androidx.work.ExistingPeriodicWorkPolicy
+import androidx.work.ExistingWorkPolicy
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.PeriodicWorkRequest
+import androidx.work.PeriodicWorkRequestBuilder
+import androidx.work.WorkManager
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import java.util.concurrent.TimeUnit
 
 class MainActivity : AppCompatActivity() {
 
@@ -35,6 +42,21 @@ class MainActivity : AppCompatActivity() {
                 .replace(R.id.fragment_container, FirstLandingPageFragment())
                 .commit()
         }, 3000)
+
+        startProgressResetWorker()
+    }
+
+    private fun startProgressResetWorker() {
+        val resetWorkRequest = PeriodicWorkRequestBuilder<ProgressResetWorker>(
+            15, TimeUnit.MINUTES // Run every 15 minutes
+        ).build()
+
+        WorkManager.getInstance(this).enqueueUniquePeriodicWork(
+            "ProgressResetWork",
+            ExistingPeriodicWorkPolicy.KEEP,
+            resetWorkRequest
+        )
+
     }
 
     fun HideBottomNav() {
