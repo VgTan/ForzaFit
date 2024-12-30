@@ -25,12 +25,13 @@
 
         <!-- Image -->
         <ImageView
-            android:id="@+id/imageView9"
+            android:id="@+id/avatarImageView"
             android:layout_width="200dp"
             android:layout_height="200dp"
             android:layout_marginTop="32dp"
             android:layout_marginBottom="16dp"
-            android:contentDescription="Push Up Bear"
+            android:contentDescription="Push Up Avatar"
+            android:visibility="gone"
             android:src="@drawable/pushupbear" />
 
         <!-- Repetition Label -->

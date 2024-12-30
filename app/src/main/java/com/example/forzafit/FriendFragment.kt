@@ -49,11 +49,18 @@ class FriendFragment : Fragment() {
         // Load friends from Firestore
         loadFriendsFromFirestore()
 
-        // Handle friend selection
-        friendListView.onItemClickListener = AdapterView.OnItemClickListener { parent, view, position, id ->
+        friendListView.onItemClickListener = AdapterView.OnItemClickListener { _, _, position, _ ->
             val selectedFriend = friendList[position]
-            Toast.makeText(requireContext(), "View Profile: $selectedFriend", Toast.LENGTH_SHORT).show()
+
+            // Pass the friend's username to FriendProfileFragment
+            val bundle = Bundle()
+            bundle.putString("friendUsername", selectedFriend)
+
+            val friendProfileFragment = FriendProfileFragment()
+            friendProfileFragment.arguments = bundle
+            friendProfileFragment.show(parentFragmentManager, "FriendProfileDialog")
         }
+
 
         // Search functionality
         searchFriend.addTextChangedListener(object : TextWatcher {

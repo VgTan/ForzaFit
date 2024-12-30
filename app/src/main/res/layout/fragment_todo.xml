@@ -50,13 +50,12 @@
         android:textColor="@color/white"
         android:textStyle="bold" />
 
-    <!-- Running Bear Image -->
     <ImageView
         android:id="@+id/imageView6"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        app:srcCompat="@drawable/runningbear" />
+        android:background="@android:color/transparent" />
 
     <!-- Tips Section -->
     <TextView

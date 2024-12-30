@@ -10,6 +10,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
@@ -36,14 +37,18 @@ class JoggingFragment : Fragment(), OnMapReadyCallback {
 
     private lateinit var mapView: MapView
     private lateinit var distanceTextView: TextView
+    private lateinit var targetTextView: TextView
     private lateinit var finishButton: Button
     private lateinit var progressBar: ProgressBar
+    private lateinit var avatarImageView: ImageView
     private var taskId: String? = null
     private var distance: Float = 0f
 
     private val auth: FirebaseAuth by lazy { FirebaseAuth.getInstance() }
     private val db: FirebaseFirestore by lazy { FirebaseFirestore.getInstance() }
     private lateinit var fusedLocationClient: FusedLocationProviderClient
+    private var targetDistance: Float = 0f
+    private var actualDistance: Float = 0f
     private var previousLocation: Location? = null
     private var googleMap: GoogleMap? = null
     private val pathPoints = mutableListOf<LatLng>()
@@ -56,17 +61,21 @@ class JoggingFragment : Fragment(), OnMapReadyCallback {
 
         mapView = view.findViewById(R.id.joggingMapView)
         distanceTextView = view.findViewById(R.id.distanceTextView)
+        targetTextView = view.findViewById(R.id.targetTextView)
         finishButton = view.findViewById(R.id.btnFinishJogging)
         progressBar = view.findViewById(R.id.progressBar)
+        avatarImageView = view.findViewById(R.id.avatarImageView)
 
         mapView.onCreate(savedInstanceState)
         mapView.getMapAsync(this)
 
         taskId = arguments?.getString("taskId")
         loadTaskDetails()
+        loadUserAvatar()
+
 
         finishButton.setOnClickListener {
-            if (distance > 0) {
+            if (actualDistance > 0) {
                 progressBar.visibility = View.VISIBLE
                 finishButton.isEnabled = false
                 updateXPAndCompleteTask(distance.toInt())
@@ -76,6 +85,37 @@ class JoggingFragment : Fragment(), OnMapReadyCallback {
         }
 
         return view
+    }
+
+    private fun loadUserAvatar() {
+        val currentUser = auth.currentUser
+        currentUser?.let { user ->
+            val userId = user.uid
+
+            db.collection("users").document(userId)
+                .get()
+                .addOnSuccessListener { document ->
+                    if (document.exists()) {
+                        val avatarId = document.getString("avatarId") ?: "bear" // Default to "bear"
+                        updateAvatarImage(avatarId)
+                    } else {
+                        Toast.makeText(context, "User data not found", Toast.LENGTH_SHORT).show()
+                    }
+                }
+                .addOnFailureListener {
+                    Toast.makeText(context, "Failed to load user avatar", Toast.LENGTH_SHORT).show()
+                }
+        }
+    }
+
+    private fun updateAvatarImage(avatarId: String) {
+        val avatarResId = when (avatarId) {
+            "bear" -> R.drawable.runningbear // Replace with your bear image resource
+            "chicken" -> R.drawable.runningchicken // Replace with your chicken image resource
+            else -> R.drawable.runningbear // Replace with a default image resource
+        }
+        avatarImageView.setImageResource(avatarResId)
+        avatarImageView.visibility = View.VISIBLE
     }
 
     override fun onMapReady(map: GoogleMap) {
@@ -134,11 +174,21 @@ class JoggingFragment : Fragment(), OnMapReadyCallback {
     private fun updateDistance(currentLocation: Location) {
         if (previousLocation != null) {
             val distanceBetween = previousLocation!!.distanceTo(currentLocation) / 1000 // in km
-            distance += distanceBetween
-            distanceTextView.text = "Distance: %.2f km".format(distance)
+            actualDistance += distanceBetween
+
+            val roundedDistance = String.format("%.1f", actualDistance)
+            distanceTextView.text = "Distance: $roundedDistance km"
+
+            // Stop tracking if target is reached
+            if (actualDistance >= targetDistance) {
+                finishButton.isEnabled = true
+                progressBar.visibility = View.GONE
+                stopLocationTracking()
+            }
         }
         previousLocation = currentLocation
     }
+
 
     private var currentMarker: Marker? = null
     private fun updateLocationOnMap(location: Location) {
@@ -182,8 +232,9 @@ class JoggingFragment : Fragment(), OnMapReadyCallback {
                     .addOnSuccessListener { document ->
                         progressBar.visibility = View.GONE
                         if (document.exists()) {
-                            distance = document.getString("value")?.toFloatOrNull() ?: 0f
-                            distanceTextView.text = "Distance: %.2f km".format(distance)
+                            targetDistance = document.getString("value")?.toFloatOrNull() ?: 0f
+                            targetTextView.text = "Target: %.2f km".format(targetDistance)
+                            distanceTextView.text = "Distance: 0.00 km"
                         } else {
                             Toast.makeText(context, "Task not found", Toast.LENGTH_SHORT).show()
                         }
@@ -289,6 +340,10 @@ class JoggingFragment : Fragment(), OnMapReadyCallback {
                     }
             }
         }
+    }
+
+    private fun stopLocationTracking() {
+        fusedLocationClient.removeLocationUpdates(object : com.google.android.gms.location.LocationCallback() {})
     }
 
     private fun navigateToProfileFragment() {

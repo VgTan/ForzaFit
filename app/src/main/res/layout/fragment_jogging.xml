@@ -34,6 +34,15 @@
         android:layout_marginBottom="16dp" />
 
     <TextView
+        android:id="@+id/targetTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:text="Target: 0.00 km"
+        android:textSize="28sp"
+        android:textColor="#FFFFFF" />
+
+    <TextView
         android:id="@+id/distanceTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -53,9 +62,11 @@
         android:textStyle="bold" />
 
     <ImageView
-        android:id="@+id/imageView8"
+        android:id="@+id/avatarImageView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:visibility="gone"
         app:srcCompat="@drawable/runningbear" />
 </LinearLayout>
 

@@ -38,7 +38,7 @@ class AddTaskFragment : Fragment() {
         exerciseTypeSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
                 inputField.hint = when (position) {
-                    0 -> "Enter kilometers"
+                    0 -> "Enter target kilometers"
                     else -> "Enter repetitions"
                 }
             }

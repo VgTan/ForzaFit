@@ -14,19 +14,18 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-import nl.dionsegijn.konfetti.xml.KonfettiView
 import nl.dionsegijn.konfetti.core.Party
 import nl.dionsegijn.konfetti.core.Position
 import nl.dionsegijn.konfetti.core.models.Shape
 import nl.dionsegijn.konfetti.core.models.Size
+import nl.dionsegijn.konfetti.xml.KonfettiView
 import nl.dionsegijn.konfetti.core.emitter.Emitter
 import java.util.concurrent.TimeUnit
-
 
 class HomeFragment : Fragment() {
 
     private lateinit var tvWelcome: TextView
-    private lateinit var imgBearAvatar: ImageView
+    private lateinit var imgAvatar: ImageView
     private lateinit var btnLevelUp: Button
     private lateinit var btnToDo: Button
     private lateinit var progressExp: ProgressBar
@@ -45,7 +44,7 @@ class HomeFragment : Fragment() {
 
         // Initialize views
         tvWelcome = view.findViewById(R.id.tvWelcome)
-        imgBearAvatar = view.findViewById(R.id.imgBearAvatar)
+        imgAvatar = view.findViewById(R.id.imgAvatar)
         btnLevelUp = view.findViewById(R.id.btnLevelUp)
         btnToDo = view.findViewById(R.id.btnToDo)
         progressExp = view.findViewById(R.id.progressExp)
@@ -61,7 +60,7 @@ class HomeFragment : Fragment() {
         val bounceAnimation = AnimationUtils.loadAnimation(requireContext(), R.anim.bounce)
 
         // Start bounce animation for the avatar
-        imgBearAvatar.startAnimation(bounceAnimation)
+        imgAvatar.startAnimation(bounceAnimation)
 
         // Set onClick listeners for buttons
         btnLevelUp.setOnClickListener {
@@ -96,6 +95,7 @@ class HomeFragment : Fragment() {
                 .addOnSuccessListener { document ->
                     if (document.exists()) {
                         val userName = document.getString("userName") ?: "[Name]"
+                        val avatarId = document.getString("avatarId") ?: "bear" // Default to bear if not set
                         var xp = document.getLong("xp")?.toInt() ?: 0
                         var level = document.getLong("level")?.toInt() ?: 1
 
@@ -121,6 +121,8 @@ class HomeFragment : Fragment() {
                         tvLevel.text = "Level $level"
                         tvExp.text = "$xpToNextLevel XP to next level"
                         animateProgressBar(progressExp, xp)
+
+                        updateAvatarImage(avatarId)
                     } else {
                         Toast.makeText(context, "User data not found", Toast.LENGTH_SHORT).show()
                     }
@@ -131,6 +133,17 @@ class HomeFragment : Fragment() {
         } ?: run {
             Toast.makeText(context, "User not logged in", Toast.LENGTH_SHORT).show()
         }
+    }
+
+    private fun updateAvatarImage(avatarId: String) {
+        val avatarResId = when (avatarId) {
+            "bear" -> R.drawable.bear
+            "chicken" -> R.drawable.chicken
+            else -> R.drawable.bear // Default to bear
+        }
+        imgAvatar.setImageResource(avatarResId)
+        imgAvatar.visibility = View.VISIBLE
+        bounceAvatar()
     }
 
     /**
@@ -162,4 +175,10 @@ class HomeFragment : Fragment() {
         )
     }
 
+    private fun bounceAvatar() {
+        if (isAdded && context != null) { // Ensure fragment is attached
+            val bounceAnimation = AnimationUtils.loadAnimation(requireContext(), R.anim.bounce)
+            imgAvatar.startAnimation(bounceAnimation)
+        }
+    }
 }

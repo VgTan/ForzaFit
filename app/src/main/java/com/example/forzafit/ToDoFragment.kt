@@ -5,7 +5,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.ImageView
 import android.widget.ProgressBar
+import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -17,7 +19,8 @@ class ToDoFragment : Fragment() {
 
     private lateinit var taskRecyclerView: RecyclerView
     private lateinit var backButton: Button
-    private lateinit var progressBar: ProgressBar // Added ProgressBar
+    private lateinit var progressBar: ProgressBar
+    private lateinit var avatarImageView: ImageView
 
     private val auth: FirebaseAuth by lazy { FirebaseAuth.getInstance() }
     private val db: FirebaseFirestore by lazy { FirebaseFirestore.getInstance() }
@@ -33,7 +36,8 @@ class ToDoFragment : Fragment() {
         // Initialize views
         taskRecyclerView = view.findViewById(R.id.taskRecyclerView)
         backButton = view.findViewById(R.id.btnBack)
-        progressBar = view.findViewById(R.id.progressBar) // Initialize ProgressBar
+        progressBar = view.findViewById(R.id.progressBar)
+        avatarImageView = view.findViewById(R.id.imageView6)
 
         // Setup RecyclerView
         taskRecyclerView.layoutManager = LinearLayoutManager(requireContext())
@@ -49,6 +53,9 @@ class ToDoFragment : Fragment() {
 
         // Fetch tasks and display progress bar
         fetchIncompleteTasks()
+
+        // Load user avatar
+        loadUserAvatar()
 
         backButton.setOnClickListener {
             backButton.isEnabled = false
@@ -90,6 +97,41 @@ class ToDoFragment : Fragment() {
                     progressBar.visibility = View.GONE
                     backButton.isEnabled = true // Re-enable button
                 }
+        }
+    }
+
+    private fun loadUserAvatar() {
+        val currentUser = auth.currentUser
+        currentUser?.let { user ->
+            val userId = user.uid
+
+            db.collection("users").document(userId)
+                .get()
+                .addOnSuccessListener { document ->
+                    if (document.exists()) {
+                        val avatarId = document.getString("avatarId") ?: "bear" // Default to "bear"
+                        updateAvatarImage(avatarId)
+                    } else {
+                        Toast.makeText(context, "User data not found", Toast.LENGTH_SHORT).show()
+                    }
+                }
+                .addOnFailureListener {
+                    Toast.makeText(context, "Failed to load user avatar", Toast.LENGTH_SHORT).show()
+                }
+        }
+    }
+
+    private fun updateAvatarImage(avatarId: String) {
+        val avatarResId = when (avatarId) {
+            "bear" -> R.drawable.runningbear // Replace with your bear image resource
+            "chicken" -> R.drawable.runningchicken // Replace with your chicken image resource
+            else -> 0 // No default image
+        }
+
+        if (avatarResId != 0) {
+            avatarImageView.setImageResource(avatarResId)
+        } else {
+            avatarImageView.setBackgroundResource(android.R.color.transparent)
         }
     }
 

@@ -16,6 +16,7 @@ class PushUpFragment : Fragment() {
     private lateinit var repetitionTextView: TextView
     private lateinit var finishButton: Button
     private lateinit var progressBar: ProgressBar
+    private lateinit var avatarImageView: ImageView
     private var taskId: String? = null
     private var repetitions: Int = 0
 
@@ -31,9 +32,11 @@ class PushUpFragment : Fragment() {
         repetitionTextView = view.findViewById(R.id.repetitionTextView)
         finishButton = view.findViewById(R.id.btnFinishPushUp)
         progressBar = view.findViewById(R.id.progressBar)
+        avatarImageView = view.findViewById(R.id.avatarImageView)
 
         taskId = arguments?.getString("taskId")
         loadTaskDetails()
+        loadUserAvatar()
 
         finishButton.setOnClickListener {
             if (repetitions > 0) {
@@ -73,6 +76,37 @@ class PushUpFragment : Fragment() {
                     }
             }
         }
+    }
+
+    private fun loadUserAvatar() {
+        val currentUser = auth.currentUser
+        currentUser?.let { user ->
+            val userId = user.uid
+
+            db.collection("users").document(userId)
+                .get()
+                .addOnSuccessListener { document ->
+                    if (document.exists()) {
+                        val avatarId = document.getString("avatarId") ?: "bear" // Default to "bear"
+                        updateAvatarImage(avatarId)
+                    } else {
+                        Toast.makeText(context, "User data not found", Toast.LENGTH_SHORT).show()
+                    }
+                }
+                .addOnFailureListener {
+                    Toast.makeText(context, "Failed to load user avatar", Toast.LENGTH_SHORT).show()
+                }
+        }
+    }
+
+    private fun updateAvatarImage(avatarId: String) {
+        val avatarResId = when (avatarId) {
+            "bear" -> R.drawable.pushupbear // Replace with your bear image resource
+            "chicken" -> R.drawable.pushupchicken // Replace with your chicken image resource
+            else -> R.drawable.pushupbear // Replace with a default image resource
+        }
+        avatarImageView.setImageResource(avatarResId)
+        avatarImageView.visibility = View.VISIBLE
     }
 
     private fun updateXPAndCompleteTask(reps: Int) {
