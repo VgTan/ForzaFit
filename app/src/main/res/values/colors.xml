@@ -1,15 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="black">#FF000000</color>
+    <color name="grey">#777777</color>
     <color name="white">#FFFFFFFF</color>
     <color name="main">#532200</color>
     <color name="secondary">#EFCFA0</color>
     <color name="sky">#87CEEB</color>
     <color name="bgProfile">#532200</color>
     <color name="textFill">#A1502E</color>
-    <color name="greenXp">#384D1F</color>
-    <color name="grayXp">#545454</color>
-
+    <color name="grayXp">#D9D9D9</color>
+    <color name="darkGray">#A0A0A0</color>
+    <color name="lightGray">#E8E8E8</color>
+    <color name="greenXpLight">#A8E063</color>
+    <color name="greenXpDark">#56AB2F</color>
 
     <color name="color1">#ffdac4</color>
     <color name="color2">#f6b89e</color>

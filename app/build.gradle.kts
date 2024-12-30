@@ -44,6 +44,7 @@ android {
 }
 
 dependencies {
+    implementation ("nl.dionsegijn:konfetti-xml:2.0.2")
     implementation(platform("com.google.firebase:firebase-bom:33.4.0"))
     implementation("com.google.firebase:firebase-analytics")
     implementation("androidx.navigation:navigation-fragment-ktx:2.7.3")
@@ -55,6 +56,7 @@ dependencies {
     implementation ("com.google.android.gms:play-services-maps:18.0.2")
     implementation ("com.google.android.gms:play-services-location:21.0.1")
     implementation ("com.github.PhilJay:MPAndroidChart:v3.1.0")
+    implementation ("androidx.work:work-runtime:2.9.0")
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)

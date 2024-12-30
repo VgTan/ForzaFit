@@ -20,8 +20,10 @@ class SettingFragment : Fragment() {
     private lateinit var submit: Button
     private lateinit var logOut: Button
     private lateinit var delete: Button
+    private lateinit var progressBar: ProgressBar
     private lateinit var privacyTitle: TextView
     private lateinit var privacyContent: LinearLayout
+    private lateinit var BMIStatus: Switch
     private lateinit var calculatorTitle: TextView
     private lateinit var calculatorContent: LinearLayout
     private lateinit var inputHeight: EditText
@@ -45,8 +47,10 @@ class SettingFragment : Fragment() {
         submit = view.findViewById(R.id.submit_button)
         logOut = view.findViewById(R.id.logout_button)
         delete = view.findViewById(R.id.delete_button)
+        progressBar = view.findViewById(R.id.progressBar)
         privacyTitle = view.findViewById(R.id.privacy_title)
         privacyContent = view.findViewById(R.id.privacy_content)
+        BMIStatus = view.findViewById(R.id.switch_bmi_status)
         calculatorTitle = view.findViewById(R.id.calculator_title)
         calculatorContent = view.findViewById(R.id.calculator_content)
         inputHeight = view.findViewById(R.id.input_height)
@@ -59,83 +63,46 @@ class SettingFragment : Fragment() {
 
         // Set click listeners to toggle visibility for accordion effect
         accountsTitle.setOnClickListener {
-            if (userId != null) {
-                userId?.let { uid ->
-                    firestore.collection("users").document(uid)
-                        .get()
-                        .addOnSuccessListener { document ->
-                            if (document != null) {
-                                val user = document.getString("userName") ?: null
-                                userName.setText(user)
-                            }
-                        }
-                        .addOnFailureListener { e ->
-                            Log.e("Firestore", "Error fetching user data", e)
-                        }
-                }
-            }
-
             toggleVisibility(accountsContent)
+            if (userId != null) loadUserData()
+        }
 
-            submit.setOnClickListener {
-                // Ambil nilai username dari EditText
-                val updatedUserName = userName.text.toString()
-
-                // Panggil fungsi untuk memperbarui data username
+        submit.setOnClickListener {
+            val updatedUserName = userName.text.toString()
+            if (updatedUserName.isNotEmpty()) {
+                handleButtonClick(submit) // Disable button
                 updateUser(updatedUserName)
-            }
-
-            // Tambahkan fungsi untuk Logout dan Delete Account
-            logOut.setOnClickListener {
-                auth.signOut() // Logout pengguna
-                Toast.makeText(context, "Logged out successfully", Toast.LENGTH_SHORT).show()
-
-                // Arahkan ke layar login
-                parentFragmentManager.beginTransaction()
-                    .replace(R.id.fragment_container, LoginFragment())
-                    .commit()
-            }
-
-            delete.setOnClickListener {
-                userId?.let { uid ->
-                    // Hapus data pengguna dari Firestore
-                    firestore.collection("users").document(uid)
-                        .delete()
-                        .addOnSuccessListener {
-                            Log.d("Firestore", "User data deleted from Firestore")
-                        }
-                        .addOnFailureListener { e ->
-                            Log.e("Firestore", "Error deleting user data", e)
-                        }
-                }
-
-                // Hapus akun pengguna dari Firebase Authentication
-                auth.currentUser?.delete()
-                    ?.addOnCompleteListener { task ->
-                        if (task.isSuccessful) {
-                            Toast.makeText(context, "Account deleted successfully", Toast.LENGTH_SHORT).show()
-
-                            // Arahkan ke layar signup
-                            parentFragmentManager.beginTransaction()
-                                .replace(R.id.fragment_container, SignUpFragment())
-                                .commit()
-                        } else {
-                            Toast.makeText(context, "Failed to delete account: ${task.exception?.message}", Toast.LENGTH_SHORT).show()
-                        }
-                    }
             }
         }
 
+        logOut.setOnClickListener {
+            handleButtonClick(logOut)
+            auth.signOut()
+            Toast.makeText(context, "Logged out successfully", Toast.LENGTH_SHORT).show()
+            navigateToFragment(LoginFragment())
+        }
+
+        delete.setOnClickListener {
+            handleButtonClick(delete)
+            deleteUserAccount()
+        }
 
         privacyTitle.setOnClickListener {
             toggleVisibility(privacyContent)
+            if(userId != null){
+                initializeBMIstatus()
+
+                BMIStatus.setOnCheckedChangeListener { _, isChecked ->
+                    updateBMIStatus(isChecked)
+                }
+            }
         }
 
         calculatorTitle.setOnClickListener {
             toggleVisibility(calculatorContent)
             if (userId != null) {
                 // Ambil data user dari Firestore
-                fetchUserData()
+                loadBMIUser()
                 // Setup BMI Calculation
                 setupBmiCalculation()
             } else {
@@ -150,7 +117,44 @@ class SettingFragment : Fragment() {
         return view
     }
 
-    private fun fetchUserData() {
+    private fun loadUserData() {
+        progressBar.visibility = View.VISIBLE
+        userId?.let { uid ->
+            firestore.collection("users").document(uid)
+                .get()
+                .addOnSuccessListener { document ->
+                    progressBar.visibility = View.GONE
+                    if (document.exists()) {
+                        val user = document.getString("userName")
+                        userName.setText(user)
+                    }
+                }
+                .addOnFailureListener {
+                    progressBar.visibility = View.GONE
+                    Toast.makeText(context, "Failed to load user data", Toast.LENGTH_SHORT).show()
+                }
+        }
+    }
+
+    private fun initializeBMIstatus(){
+        userId?.let { uid->
+            firestore.collection("users").document(uid)
+                .get()
+                .addOnSuccessListener { document ->
+                    if (document != null && document.exists()) {
+                        val showBMI = document.getBoolean("showBMI") ?: true
+                        BMIStatus.isChecked = showBMI
+                    } else {
+                        Log.e("Firestore", "Switch tidak ditemukan.")
+                    }
+                }
+                .addOnFailureListener { e ->
+                    Log.e("Firestore", "Error fetching showBMI status", e)
+                }
+        }
+    }
+
+    private fun loadBMIUser() {
         userId?.let { uid ->
             firestore.collection("users").document(uid)
                 .get()
@@ -169,15 +173,11 @@ class SettingFragment : Fragment() {
         }
     }
 
-    // Function to toggle visibility of the content sections
     private fun toggleVisibility(content: View) {
-        if (content.visibility == View.GONE) {
-            content.visibility = View.VISIBLE
-        } else {
-            content.visibility = View.GONE
-        }
+        content.visibility = if (content.visibility == View.GONE) View.VISIBLE else View.GONE
     }
 
+//    function kalkulasi BMI
     private fun setupBmiCalculation() {
         val textWatcher = object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
@@ -217,21 +217,37 @@ class SettingFragment : Fragment() {
         }
     }
 
-//    function updateFirestore
-
     private fun updateUser(userName: String) {
-        userId?.let{uid ->
-            val userUpdates = mapOf(
-                "userName" to userName
-            )
+        progressBar.visibility = View.VISIBLE
+        userId?.let { uid ->
+            val updates = mapOf("userName" to userName)
+            firestore.collection("users").document(uid)
+                .update(updates)
+                .addOnSuccessListener {
+                    progressBar.visibility = View.GONE
+                    submit.isEnabled = true
+                    Toast.makeText(context, "Username updated successfully", Toast.LENGTH_SHORT).show()
+                }
+                .addOnFailureListener { e ->
+                    progressBar.visibility = View.GONE
+                    submit.isEnabled = true
+                    Toast.makeText(context, "Failed to update: ${e.message}", Toast.LENGTH_SHORT).show()
+                }
+        }
+    }
 
+    private fun updateBMIStatus(showBMI: Boolean) {
+        userId?.let { uid ->
+            val userUpdates = mapOf(
+                "showBMI" to showBMI
+            )
             firestore.collection("users").document(uid)
                 .update(userUpdates)
                 .addOnSuccessListener {
-                    Log.d("Firestore", "User data updated successfully")
+                    Log.d("Firestore", "BMI status updated successfully")
                 }
                 .addOnFailureListener { e ->
-                    Log.e("Firestore", "Error updating user data", e)
+                    Log.e("Firestore", "Error updating showBMI", e)
                 }
         }
     }
@@ -254,4 +270,42 @@ class SettingFragment : Fragment() {
                 }
         }
     }
+
+    private fun deleteUserAccount() {
+        progressBar.visibility = View.VISIBLE
+        userId?.let { uid ->
+            firestore.collection("users").document(uid)
+                .delete()
+                .addOnSuccessListener {
+                    auth.currentUser?.delete()?.addOnCompleteListener { task ->
+                        progressBar.visibility = View.GONE
+                        delete.isEnabled = true
+                        if (task.isSuccessful) {
+                            Toast.makeText(context, "Account deleted successfully", Toast.LENGTH_SHORT).show()
+                            navigateToFragment(SignUpFragment())
+                        } else {
+                            Toast.makeText(context, "Failed to delete account", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                }
+                .addOnFailureListener {
+                    progressBar.visibility = View.GONE
+                    delete.isEnabled = true
+                    Toast.makeText(context, "Failed to delete data", Toast.LENGTH_SHORT).show()
+                }
+        }
+    }
+
+    private fun handleButtonClick(button: Button) {
+        button.isEnabled = false
+        progressBar.visibility = View.VISIBLE
+    }
+
+    private fun navigateToFragment(fragment: Fragment) {
+        (activity as? MainActivity)?.HideBottomNav()
+        parentFragmentManager.beginTransaction()
+            .replace(R.id.fragment_container, fragment)
+            .commit()
+    }
+
 }

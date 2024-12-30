@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.example.forzafit.databinding.FragmentProgressDetailsBinding
 import com.google.firebase.auth.FirebaseAuth
@@ -34,6 +35,7 @@ class ProgressDetailsFragment : Fragment() {
             requireActivity().onBackPressed()
         }
 
+        // Fetch progress data from Firestore to display
         fetchProgressData("Today")
         fetchProgressData("ThisWeek")
         fetchProgressData("Last3Months")
@@ -46,16 +48,15 @@ class ProgressDetailsFragment : Fragment() {
             .get()
             .addOnSuccessListener { document ->
                 if (document != null) {
-                    // Fetch data for each exercise type
+                    // Fetch progress values
                     val pushUps = document.getLong("pushUps$period")?.toInt() ?: 0
                     val sitUps = document.getLong("sitUps$period")?.toInt() ?: 0
                     val pullUps = document.getLong("pullUps$period")?.toInt() ?: 0
-                    val jogging = document.getLong("jogging$period")?.toInt() ?: 0 // In km
+                    val jogging = document.getLong("jogging$period")?.toInt() ?: 0
 
-                    // Calculate calories
                     val calories = calculateCalories(pushUps, sitUps, pullUps, jogging)
 
-                    // Update UI
+                    // Update UI based on the period
                     when (period) {
                         "Today" -> {
                             binding.txtCaloriesCountToday.text = "%.2f kkal".format(calories)
@@ -82,18 +83,16 @@ class ProgressDetailsFragment : Fragment() {
                 }
             }
             .addOnFailureListener {
-                // Handle failure (e.g., show a toast)
+                Toast.makeText(context, "Failed to load progress data", Toast.LENGTH_SHORT).show()
             }
     }
 
     private fun calculateCalories(pushUps: Int, sitUps: Int, pullUps: Int, jogging: Int): Double {
-        // Define calorie burn rates
         val pushUpRate = 0.3 // kcal per repetition
         val sitUpRate = 0.4 // kcal per repetition
         val pullUpRate = 1.0 // kcal per repetition
-        val joggingRate = 100.0 // kcal per kilometer
+        val joggingRate = 70.0 // kcal per kilometer
 
-        // Calculate total calories
         return (pushUps * pushUpRate) +
                 (sitUps * sitUpRate) +
                 (pullUps * pullUpRate) +

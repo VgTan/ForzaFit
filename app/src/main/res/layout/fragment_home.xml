@@ -25,14 +25,16 @@
         app:layout_constraintVertical_bias="0.19999999" />
 
     <!-- Go Level Up Button -->
-    <Button
+        <Button
         android:id="@+id/btnLevelUp"
         android:layout_width="200dp"
         android:layout_height="50dp"
         android:layout_marginTop="16dp"
         android:backgroundTint="@color/main"
         android:text="Go Level Up"
-        android:textColor="@color/white"
+        android:textColor="#FFFFFF"
+        android:padding="8dp"
+        android:textStyle="bold"
         app:layout_constraintTop_toBottomOf="@id/tvWelcome"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -45,27 +47,38 @@
         android:layout_marginTop="16dp"
         android:backgroundTint="@color/main"
         android:text="Go To To-Do"
-        android:textColor="@color/white"
+        android:textColor="#FFFFFF"
+        android:padding="8dp"
+        android:textStyle="bold"
         app:layout_constraintTop_toBottomOf="@id/btnLevelUp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5" />
 
     <!-- Bear Avatar -->
+
+    <!-- XP Text -->
+
+    <nl.dionsegijn.konfetti.xml.KonfettiView
+        android:id="@+id/konfettiView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center" />
+
     <ImageView
-        android:id="@+id/imgBearAvatar"
+        android:id="@+id/imgAvatar"
         android:layout_width="200dp"
         android:layout_height="200dp"
         android:layout_marginTop="16dp"
-        android:contentDescription="Fat Bear Avatar"
-        android:src="@drawable/bear"
+        android:contentDescription="User Avatar"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_bias="0.502"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/btnToDo" />
+        app:layout_constraintTop_toBottomOf="@id/btnToDo"
+        app:layout_constraintVertical_bias="0.324" />
 
-    <!-- XP Text -->
     <TextView
         android:id="@+id/tvExp"
         android:layout_width="wrap_content"
@@ -75,7 +88,7 @@
         android:textColor="@color/white"
         android:textSize="16sp"
         android:textStyle="bold"
-        app:layout_constraintTop_toBottomOf="@id/imgBearAvatar"
+        app:layout_constraintTop_toBottomOf="@id/imgAvatar"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5" />
@@ -84,11 +97,13 @@
         android:id="@+id/progressExp"
         style="?android:attr/progressBarStyleHorizontal"
         android:layout_width="300dp"
-        android:layout_height="24dp"
-        android:layout_marginTop="8dp"
+        android:layout_height="30dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
         android:indeterminateOnly="false"
         android:max="100"
-        android:progress="50"
+        android:progress="2"
         android:progressDrawable="@drawable/progress_bar_style"
         app:layout_constraintTop_toBottomOf="@id/tvExp"
         app:layout_constraintStart_toStartOf="parent"

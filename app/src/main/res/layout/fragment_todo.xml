@@ -7,6 +7,15 @@
     android:background="@drawable/todopagebackground"
     android:padding="16dp">
 
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="16dp"
+        android:visibility="gone"
+        style="?android:attr/progressBarStyleLarge" />
+
     <!-- Title -->
     <TextView
         android:id="@+id/tvToDoTitle"
@@ -19,15 +28,16 @@
         android:layout_gravity="center_horizontal"
         android:layout_marginBottom="16dp" />
 
-    <!-- Task List -->
-    <ListView
-        android:id="@+id/taskListView"
+    <!-- RecyclerView for Task List -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/taskRecyclerView"
         android:layout_width="match_parent"
-        android:layout_height="262dp"
+        android:layout_height="240dp"
         android:layout_marginBottom="16dp"
         android:background="#57EFCFA0"
-        android:divider="@android:color/transparent"
-        android:dividerHeight="8dp" />
+        android:clipToPadding="false"
+        android:padding="8dp"
+        android:scrollbars="vertical" />
 
     <!-- Back Button -->
     <Button
@@ -35,7 +45,6 @@
         android:layout_width="200dp"
         android:layout_height="50dp"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="-40dp"
         android:backgroundTint="@color/main"
         android:text="Back"
         android:textColor="@color/white"
@@ -45,15 +54,15 @@
         android:id="@+id/imageView6"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="160dp"
-        app:srcCompat="@drawable/runningbear" />
+        android:layout_marginTop="16dp"
+        android:background="@android:color/transparent" />
 
-    <!-- Tips -->
+    <!-- Tips Section -->
     <TextView
         android:id="@+id/tvTips"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
+        android:layout_marginTop="8dp"
         android:gravity="center"
         android:text="Tips:\nEat 100 cal per day: Chicken Breast 10kg"
         android:textColor="#FFFFFF"

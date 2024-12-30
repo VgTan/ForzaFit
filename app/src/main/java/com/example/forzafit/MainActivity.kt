@@ -8,12 +8,20 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import com.example.forzafit.databinding.ActivityMainBinding
 import androidx.fragment.app.Fragment
+import androidx.work.ExistingPeriodicWorkPolicy
+import androidx.work.ExistingWorkPolicy
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.PeriodicWorkRequest
+import androidx.work.PeriodicWorkRequestBuilder
+import androidx.work.WorkManager
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import java.util.concurrent.TimeUnit
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var bottomNav: BottomNavigationView
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -24,6 +32,7 @@ class MainActivity : AppCompatActivity() {
         setSupportActionBar(binding.toolbar)
         HideNavtools()
         HideBottomNav()
+
         supportFragmentManager.beginTransaction()
             .replace(R.id.fragment_container, LazyLoadFragment())
             .commit()
@@ -33,7 +42,23 @@ class MainActivity : AppCompatActivity() {
                 .replace(R.id.fragment_container, FirstLandingPageFragment())
                 .commit()
         }, 3000)
+
+        startProgressResetWorker()
     }
+
+    private fun startProgressResetWorker() {
+        val resetWorkRequest = PeriodicWorkRequestBuilder<ProgressResetWorker>(
+            15, TimeUnit.MINUTES // Run every 15 minutes
+        ).build()
+
+        WorkManager.getInstance(this).enqueueUniquePeriodicWork(
+            "ProgressResetWork",
+            ExistingPeriodicWorkPolicy.KEEP,
+            resetWorkRequest
+        )
+
+    }
+
     fun HideBottomNav() {
         bottomNav.visibility = View.GONE
     }
@@ -53,8 +78,12 @@ class MainActivity : AppCompatActivity() {
 
     fun ShowNavtools() {
         supportActionBar?.show()
-
         window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_VISIBLE
+    }
+
+    // Function to programmatically set active tab in Bottom Navigation
+    fun setActiveTab(itemId: Int) {
+        bottomNav.selectedItemId = itemId
     }
 
     private val navListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
@@ -67,7 +96,11 @@ class MainActivity : AppCompatActivity() {
             R.id.nav_user -> selectedFragment = ProfileFragment()
         }
 
-        supportFragmentManager.beginTransaction().replace(R.id.fragment_container, selectedFragment!!).commit()
+        if (selectedFragment != null) {
+            supportFragmentManager.beginTransaction()
+                .replace(R.id.fragment_container, selectedFragment)
+                .commit()
+        }
 
         true
     }

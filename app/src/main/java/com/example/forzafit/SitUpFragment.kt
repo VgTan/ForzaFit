@@ -4,14 +4,18 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.*
+import android.widget.Button
+import android.widget.ImageView
+import android.widget.ProgressBar
+import android.widget.TextView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import java.text.SimpleDateFormat
 import java.util.*
 
-class PushUpFragment : Fragment() {
+class SitUpFragment : Fragment() {
 
     private lateinit var repetitionTextView: TextView
     private lateinit var finishButton: Button
@@ -27,10 +31,10 @@ class PushUpFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = inflater.inflate(R.layout.fragment_push_up, container, false)
+        val view = inflater.inflate(R.layout.fragment_sit_up, container, false)
 
         repetitionTextView = view.findViewById(R.id.repetitionTextView)
-        finishButton = view.findViewById(R.id.btnFinishPushUp)
+        finishButton = view.findViewById(R.id.btnFinishSitUp)
         progressBar = view.findViewById(R.id.progressBar)
         avatarImageView = view.findViewById(R.id.avatarImageView)
 
@@ -101,9 +105,9 @@ class PushUpFragment : Fragment() {
 
     private fun updateAvatarImage(avatarId: String) {
         val avatarResId = when (avatarId) {
-            "bear" -> R.drawable.pushupbear // Replace with your bear image resource
-            "chicken" -> R.drawable.pushupchicken // Replace with your chicken image resource
-            else -> R.drawable.pushupbear // Replace with a default image resource
+            "bear" -> R.drawable.situpbear // Replace with your bear image resource
+            "chicken" -> R.drawable.situpchicken // Replace with your chicken image resource
+            else -> R.drawable.situpbear // Replace with a default image resource
         }
         avatarImageView.setImageResource(avatarResId)
         avatarImageView.visibility = View.VISIBLE
@@ -133,9 +137,9 @@ class PushUpFragment : Fragment() {
                             updatedLevel += 1
                         }
 
-                        val currentPushUpsToday = document.getLong("pushUpsToday")?.toInt() ?: 0
-                        val currentPushUpsThisWeek = document.getLong("pushUpsThisWeek")?.toInt() ?: 0
-                        val currentPushUpsLast3Months = document.getLong("pushUpsLast3Months")?.toInt() ?: 0
+                        val currentSitUpsToday = document.getLong("sitUpsToday")?.toInt() ?: 0
+                        val currentSitUpsThisWeek = document.getLong("sitUpsThisWeek")?.toInt() ?: 0
+                        val currentSitUpsLast3Months = document.getLong("sitUpsLast3Months")?.toInt() ?: 0
 
                         val lastUpdatedToday = document.getLong("lastUpdatedToday") ?: 0L
                         val lastUpdatedWeek = document.getLong("lastUpdatedWeek") ?: 0L
@@ -145,16 +149,16 @@ class PushUpFragment : Fragment() {
                         val resetWeek = currentTime - lastUpdatedWeek > 7 * 24 * 60 * 60 * 1000
                         val reset3Months = currentTime - lastUpdated3Months > (3 * 30.44 * 24 * 60 * 60 * 1000).toLong()
 
-                        val updatedPushUpsToday = if (resetToday) reps else currentPushUpsToday + reps
-                        val updatedPushUpsThisWeek = if (resetWeek) reps else currentPushUpsThisWeek + reps
-                        val updatedPushUpsLast3Months = if (reset3Months) reps else currentPushUpsLast3Months + reps
+                        val updatedSitUpsToday = if (resetToday) reps else currentSitUpsToday + reps
+                        val updatedSitUpsThisWeek = if (resetWeek) reps else currentSitUpsThisWeek + reps
+                        val updatedSitUpsLast3Months = if (reset3Months) reps else currentSitUpsLast3Months + reps
 
                         val updates = mutableMapOf<String, Any>(
                             "xp" to updatedXP,
                             "level" to updatedLevel,
-                            "pushUpsToday" to updatedPushUpsToday,
-                            "pushUpsThisWeek" to updatedPushUpsThisWeek,
-                            "pushUpsLast3Months" to updatedPushUpsLast3Months,
+                            "sitUpsToday" to updatedSitUpsToday,
+                            "sitUpsThisWeek" to updatedSitUpsThisWeek,
+                            "sitUpsLast3Months" to updatedSitUpsLast3Months,
                             "lastUpdatedToday" to if (resetToday) currentTime else lastUpdatedToday,
                             "lastUpdatedWeek" to if (resetWeek) currentTime else lastUpdatedWeek,
                             "lastUpdated3Months" to if (reset3Months) currentTime else lastUpdated3Months
