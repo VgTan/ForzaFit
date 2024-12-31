@@ -50,31 +50,16 @@ class ForgotPasswordFragment : Fragment() {
         progressBar.visibility = View.VISIBLE
         sendButton.isEnabled = false
 
-        auth.fetchSignInMethodsForEmail(email).addOnCompleteListener { fetchTask ->
-            if (fetchTask.isSuccessful) {
-                val signInMethods = fetchTask.result?.signInMethods
-                if (signInMethods.isNullOrEmpty()) {
-                    progressBar.visibility = View.GONE
-                    sendButton.isEnabled = true
-                    Toast.makeText(context, "Email not found in the database.", Toast.LENGTH_SHORT).show()
-                } else {
-                    auth.sendPasswordResetEmail(email)
-                        .addOnCompleteListener { task ->
-                            progressBar.visibility = View.GONE
-                            sendButton.isEnabled = true
-                            if (task.isSuccessful) {
-                                Toast.makeText(context, "Password reset email sent!", Toast.LENGTH_SHORT).show()
-                                parentFragmentManager.popBackStack()
-                            } else {
-                                Toast.makeText(context, "Error: ${task.exception?.message}", Toast.LENGTH_SHORT).show()
-                            }
-                        }
-                }
-            } else {
+        auth.sendPasswordResetEmail(email)
+            .addOnCompleteListener { task ->
                 progressBar.visibility = View.GONE
                 sendButton.isEnabled = true
-                Toast.makeText(context, "Error checking email: ${fetchTask.exception?.message}", Toast.LENGTH_SHORT).show()
+                if (task.isSuccessful) {
+                    Toast.makeText(context, "Password reset email sent!", Toast.LENGTH_SHORT).show()
+                    parentFragmentManager.popBackStack()
+                } else {
+                    Toast.makeText(context, "Error: ${task.exception?.message}", Toast.LENGTH_SHORT).show()
+                }
             }
-        }
     }
 }
